@@ -2,6 +2,7 @@
     [ split/3
     , take/3
     , drop/3
+    , map_include/3
     ]).
 /** <module> Utilities for lists
 
@@ -181,3 +182,42 @@ test(backward_huge) :-
         )
     ).
 :- end_tests(drop).
+
+
+%%	map_include(:Goal:callable, +In:list, -Out:list) is det.
+%
+%	True if Out (elements =Yi=) contains those elements of In
+%	(=Xi=) for which
+%	=|call(Goal, Xi, Yi)|= is true.  If =|call(Goal, Xi, Yi)|= fails,
+%	the corresponding element is omitted from Out.  If Goal generates
+%	multiple solutions, only the first one is taken.
+%
+%	For example, assuming =|f(X,Y) :- number(X), succ(X,Y)|=
+%	==
+%	?- map_include(f, [1,a,3], L).
+%	L = [2, 4].
+%	==
+:- meta_predicate map_include(2, +, -).
+map_include(F, L0, L) :-
+    map_include_(L0, F, [], ReversedL),
+    reverse(ReversedL, L).
+map_include_([], _, Accum, Accum).
+map_include_([H0|T], F, Accum0, List) :-
+    (   call(F, H0, H)
+    ->  map_include_(T, F, [H|Accum0], List)
+    ;   map_include_(T, F,    Accum0 , List)
+    ).
+
+
+% predicates for use during testing
+map_include_test_num(X,X) :- number(X).
+map_include_test_f(X,Y) :- number(X), succ(X, Y).
+
+:- begin_tests(map_include).
+test(just_mapping) :-
+    map_include(succ, [1,2,3], [2,3,4]).
+test(just_filtering) :-
+    map_include(map_include_test_num, [1,a,3], [1,3]).
+test(both_mapping_and_filtering) :-
+    map_include(map_include_test_f, [a,1,2,b], [2,3]).
+:- end_tests(map_include).
