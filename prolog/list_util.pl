@@ -1,5 +1,6 @@
 :- module(list_util,
     [ split/3
+    , take/3
     ]).
 /** <module> Utilities for lists
 
@@ -16,7 +17,6 @@ A collection of predicates for working with lists.
 %	or combine several sublists into a single list.
 %
 %	For example,
-%
 %	==
 %	?- portray_text(true).
 %
@@ -72,3 +72,50 @@ test(forward_trailing_one) :-
 test(forward_trailing_two) :-
     split("hello\ngoodbye\n", 10, ["hello", "goodbye", ""]).
 :- end_tests(split).
+
+%%	take(?List:list, +N:nonneg, ?Front:list) is det.
+%
+%	True if Front contains the first N elements of List.
+%	If N is larger than List's length, =|List=Front|=.
+%
+%	For example,
+%	==
+%	?- take([1,2,3,4], 2, L).
+%	L = [1, 2].
+%
+%	?- take([1], 2, L).
+%	L = [1].
+%
+%	?- take(L, 2, [a,b]).
+%	L = [a, b|_G1055].
+%	==
+take([], N, []) :-
+    N > 0,
+    !.  % optimization
+take(_, 0, []) :-
+    !.  % optimization
+take([H|T], N1, [H|Rest]) :-
+    N1 > 0,
+    succ(N0, N1),
+    take(T, N0, Rest).
+
+:- begin_tests(take).
+test(n_huge) :-
+    take([a,b], 100, [a,b]).
+test(n_huge_empty) :-
+    take([], 100, []).
+test(n_small) :-
+    take([a,b,c,d], 2, [a,b]).
+test(none) :-
+    take([a,b,c], 0, []).
+test(none_empty) :-
+    take([], 0, []).
+
+test(backward) :-
+    take(L, 3, [a,b,c]),
+    L = [a,b,c|T],
+    var(T).
+test(backward_huge) :-
+    take(L, 300, [a,b]),
+    L = [a,b].
+:- end_tests(take).
