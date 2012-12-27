@@ -1,6 +1,7 @@
 :- module(list_util,
     [ split/3
     , take/3
+    , drop/3
     ]).
 /** <module> Utilities for lists
 
@@ -119,3 +120,64 @@ test(backward_huge) :-
     take(L, 300, [a,b]),
     L = [a,b].
 :- end_tests(take).
+
+% Define an empty_list type to assist with drop/3 documentation
+error:has_type(empty_list, []).
+
+%%	drop(?List:list, +N:nonneg, ?Rest:list) is det.
+%%	drop(-List:list, +N:positive_integer, +Rest:empty_list) is multi.
+%
+%
+%	True if Rest is what remains of List after dropping the first N
+%	elements.  If N is greater than List's length, =|Rest = []|=.
+%
+%	For example,
+%	==
+%	?- drop([a,b,c], 1, L).
+%	L = [b, c].
+%
+%	?- drop([a,b,c], 10, L).
+%	L = [].
+%
+%	?- drop(L, 1, [2,3]).
+%	L = [_G1054, 2, 3].
+%
+%	?- drop(L, 2, []).
+%	L = [] ;
+%	L = [_G1024] ;
+%	L = [_G1024, _G1027].
+%	==
+drop(L, 0, L) :-
+    !.  % optimization
+drop([], N, []) :-
+    N > 0.
+drop([_|T], N1, Rest) :-
+    N1 > 0,
+    succ(N0, N1),
+    drop(T, N0, Rest).
+
+:- begin_tests(drop).
+test(zero) :-
+    drop([a,b], 0, [a,b]).
+test(one) :-
+    drop([a,b], 1, [b]).
+test(huge) :-
+    drop([1,2,3], 99, []).
+
+test(backward) :-
+    drop(L, 3, [4,5]),
+    L = [A, B, C, 4, 5],
+    var(A), var(B), var(C).
+test(backward_zero) :-
+    drop(L, 0, [1,2,3]),
+    L = [1,2,3].
+test(backward_huge) :-
+    forall(
+        drop(L,3,[]),
+        ( length(L,N)
+        , N =< 3
+        , term_variables(L, Vs)
+        , length(Vs, N)
+        )
+    ).
+:- end_tests(drop).
