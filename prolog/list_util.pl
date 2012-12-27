@@ -4,19 +4,6 @@
     , drop/3
     , map_include/3
     ]).
-/** <module> Utilities for lists
-
-A collection of predicates for working with lists.
-
-Some of these predicates are inspired by functions in Haskell's
-[[Data.List][http://hackage.haskell.org/packages/archive/base/latest/doc/html/Data-List.html]]
-library. Prolog's reversible predicates allow us to get by with
-fewer definitions than Haskell needs.
-
-@author Michael Hendricks <michael@ndrix.org>
-@license BSD
-*/
-
 %%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
 %	True if lists in Separated joined together with Separator form

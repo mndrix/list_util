@@ -1,6 +1,6 @@
 name(list_util).
 version('0.0.1').
-title('Utilities for lists').
+title('Predicates for working with lists').
 keywords([lists]).
 author( 'Michael Hendricks', 'michael@ndrix.org' ).
 packager( 'Michael Hendricks', 'michael@ndrix.org' ).
