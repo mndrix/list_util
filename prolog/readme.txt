@@ -21,5 +21,8 @@ Some of these predicates are inspired by functions in Haskell's
 library. Prolog's reversible predicates allow us to get by with
 fewer definitions than Haskell needs.
 
+The source code is available and pull requests are accepted from
+the project's GitHub repository: https://github.com/mndrix/list_util
+
 @author Michael Hendricks <michael@ndrix.org>
 @license BSD
