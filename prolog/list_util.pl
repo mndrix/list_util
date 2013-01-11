@@ -1,12 +1,12 @@
 :- module(list_util,
-    [ split/3
-    , take/3
-    , drop/3
-    , map_include/3
-    , sort_r/2
-    , msort_r/2
-    , keysort_r/2
-    ]).
+          [ drop/3
+          , keysort_r/2
+          , map_include/3
+          , msort_r/2
+          , sort_r/2
+          , split/3
+          , take/3
+          ]).
 %%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
 %	True if lists in Separated joined together with Separator form
