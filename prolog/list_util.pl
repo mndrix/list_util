@@ -3,6 +3,9 @@
     , take/3
     , drop/3
     , map_include/3
+    , sort_r/2
+    , msort_r/2
+    , keysort_r/2
     ]).
 %%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
@@ -213,3 +216,42 @@ test(just_filtering) :-
 test(both_mapping_and_filtering) :-
     map_include(map_include_test_f, [a,1,2,b], [2,3]).
 :- end_tests(map_include).
+
+
+%%	sort_r(+List:list, -ReverseSorted:list) is det.
+%
+%	Like sort/2 but produces a list sorted in reverse order.
+sort_r --> sort, reverse.
+
+:- begin_tests(sort_r).
+test(atoms) :-
+    sort_r([a,c,j,b], [j,c,b,a]).
+test(duplicates) :-
+    sort_r([3,m,4,1,m,9], [m,9,4,3,1]).
+:- end_tests(sort_r).
+
+
+%%	msort_r(+List:list, -ReverseSorted:list) is det.
+%
+%	Like msort/2 but produces a list sorted in reverse order.
+msort_r --> msort, reverse.
+
+:- begin_tests(msort_r).
+test(atoms) :-
+    msort_r([a,c,j,b], [j,c,b,a]).
+test(duplicates) :-
+    msort_r([3,m,4,1,m,9], [m,m,9,4,3,1]).
+:- end_tests(msort_r).
+
+
+%%	keysort_r(+List:list, -ReverseSorted:list) is det.
+%
+%	Like keysort/2 but produces a list sorted in reverse order.
+keysort_r --> keysort, reverse.
+
+:- begin_tests(keysort_r).
+test(atom_int) :-
+    keysort_r([a-1,c-3,b-2],[c-3,b-2,a-1]).
+test(mixed) :-
+    keysort_r([beta-2,9-nine,7.4-float], [beta-2,9-nine,7.4-float]).
+:- end_tests(keysort_r).
