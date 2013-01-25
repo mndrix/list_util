@@ -6,6 +6,7 @@
           , sort_r/2
           , split/3
           , take/3
+          , xfy_list/3
           ]).
 %%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
@@ -255,3 +256,36 @@ test(atom_int) :-
 test(mixed) :-
     keysort_r([beta-2,9-nine,7.4-float], [beta-2,9-nine,7.4-float]).
 :- end_tests(keysort_r).
+
+
+%%  xfy_list(?Op:atom, ?Term, ?List) is det.
+%
+%   True if elements of List joined together with xfy operator Op gives
+%   Term. Usable in all directions.
+%
+%   For example,
+%
+%   ==
+%   ?- xfy_list(',', (a,b,c), L).
+%   L = [a, b, c].
+%
+%   ?- xfy_list(Op, 4^3^2, [4,3,2]).
+%   Op = (^).
+%   ==
+xfy_list(Op, Term, [Left|List]) :-
+    Term =.. [Op, Left, Right],
+    xfy_list(Op, Right, List),
+    !.
+xfy_list(_, Term, [Term]).
+
+:- begin_tests(xfy_list).
+test(forwards) :-
+    xfy_list(',', (a,b,[c],d), List),
+    List = [a,b,[c],d].
+test(backwards) :-
+    xfy_list('$', Term, [one, two, 3]),
+    Term = '$'(one, '$'(two, 3)).
+test(find_op) :-
+    xfy_list(Op, 4^3^2, [4,3,2]),
+    Op = '^'.
+:- end_tests(xfy_list).
