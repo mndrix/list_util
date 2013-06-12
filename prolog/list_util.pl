@@ -2,12 +2,18 @@
           [ drop/3
           , keysort_r/2
           , map_include/3
+          , maximum/2
+          , maximum_by/3
+          , minimum/2
+          , minimum_by/3
           , msort_r/2
           , sort_r/2
           , split/3
           , take/3
           , xfy_list/3
           ]).
+:- use_module(library(when), [when/2]).
+
 %%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
 %	True if lists in Separated joined together with Separator form
@@ -123,6 +129,71 @@ map_include_([H0|T], F, Accum0, List) :-
     ;   map_include_(T, F,    Accum0 , List)
     ).
 
+
+%%	maximum(?List, ?Maximum) is semidet.
+%
+%   True if Maximum is the largest element of List, according to
+%   compare/3.  The same as `maximum_by(compare, List, Maximum)`.
+maximum(List, Maximum) :-
+    maximum_by(compare, List, Maximum).
+
+
+%%	maximum_by(+Compare, ?List, ?Maximum) is semidet.
+%
+%   True if Maximum is the largest element of List, according to
+%   Compare. Compare should be a predicate with the same signature as
+%   compare/3.
+%
+%   If List is not ground the constraint is delayed until List becomes
+%   ground.
+:- meta_predicate maximum_by(3,?,?).
+maximum_by(Compare, List, Minimum) :-
+    \+ ground(List),
+    !,
+    when(ground(List), maximum_by(Compare,List,Minimum)).
+maximum_by(Compare,[H|T],Minimum) :-
+    maximum_by(T, Compare, H, Minimum).
+maximum_by([], _, Minimum, Minimum).
+maximum_by([H|T], Compare, MinSoFar, Minimum) :-
+    call(Compare, Order, H, MinSoFar),
+    ( Order = (>) ->
+        maximum_by(T, Compare, H, Minimum)
+    ; % otherwise ->
+        maximum_by(T, Compare, MinSoFar, Minimum)
+    ).
+
+
+%%	minimum(?List, ?Minimum) is semidet.
+%
+%   True if Minimum is the smallest element of List, according to
+%   compare/3.  The same as `minimum_by(compare, List, Minimum)`.
+minimum(List, Minimum) :-
+    minimum_by(compare, List, Minimum).
+
+
+%%	minimum_by(+Compare, ?List, ?Minimum) is semidet.
+%
+%   True if Minimum is the smallest element of List, according to
+%   Compare. Compare should be a predicate with the same signature as
+%   compare/3.
+%
+%   If List is not ground the constraint is delayed until List becomes
+%   ground.
+:- meta_predicate minimum_by(3,?,?).
+minimum_by(Compare, List, Minimum) :-
+    \+ ground(List),
+    !,
+    when(ground(List), minimum_by(Compare,List,Minimum)).
+minimum_by(Compare,[H|T],Minimum) :-
+    minimum_by(T, Compare, H, Minimum).
+minimum_by([], _, Minimum, Minimum).
+minimum_by([H|T], Compare, MinSoFar, Minimum) :-
+    call(Compare, Order, H, MinSoFar),
+    ( Order = (<) ->
+        minimum_by(T, Compare, H, Minimum)
+    ; % otherwise ->
+        minimum_by(T, Compare, MinSoFar, Minimum)
+    ).
 
 
 %%	sort_r(+List:list, -ReverseSorted:list) is det.
