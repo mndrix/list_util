@@ -62,6 +62,7 @@ take([H|T], N1, [H|Rest]) :-
 
 
 % Define an empty_list type to assist with drop/3 documentation
+:- multifile error:has_type/2.
 error:has_type(empty_list, []).
 
 %%	drop(?List:list, +N:nonneg, ?Rest:list) is det.
