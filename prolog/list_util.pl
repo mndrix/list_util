@@ -119,6 +119,7 @@ drop([_|T], N1, Rest) :-
 %	L = [2, 4].
 %	==
 :- meta_predicate map_include(2, +, -).
+:- meta_predicate map_include_(+, 2, +, -).
 map_include(F, L0, L) :-
     map_include_(L0, F, [], ReversedL),
     reverse(ReversedL, L).
@@ -147,6 +148,7 @@ maximum(List, Maximum) :-
 %   If List is not ground the constraint is delayed until List becomes
 %   ground.
 :- meta_predicate maximum_by(3,?,?).
+:- meta_predicate maximum_by(?,3,?,?).
 maximum_by(Compare, List, Minimum) :-
     \+ ground(List),
     !,
@@ -180,6 +182,7 @@ minimum(List, Minimum) :-
 %   If List is not ground the constraint is delayed until List becomes
 %   ground.
 :- meta_predicate minimum_by(3,?,?).
+:- meta_predicate minimum_by(?,3,?,?).
 minimum_by(Compare, List, Minimum) :-
     \+ ground(List),
     !,
