@@ -1,6 +1,8 @@
 :- use_module(library(list_util)).
 :- use_module(library(tap)).
 
+:- set_prolog_flag(double_quotes, codes).
+
 forward_zero :-
     split("", 10, [""]).
 forward_one :-
