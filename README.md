@@ -20,7 +20,9 @@ predicate.
 
 # Changes in this Version
 
-    * Add some meta-predicate declarations
+    * Implement lines/2
+    * Faster map_include/3 using logic variables
+    * Implement iterate/3
 
 # Installation
 
