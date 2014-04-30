@@ -120,15 +120,16 @@ drop([_|T], N1, Rest) :-
 %	L = [2, 4].
 %	==
 :- meta_predicate map_include(2, +, -).
-:- meta_predicate map_include_(+, 2, +, -).
+:- meta_predicate map_include_(+, -, 2).
 map_include(F, L0, L) :-
-    map_include_(L0, F, [], ReversedL),
-    reverse(ReversedL, L).
-map_include_([], _, Accum, Accum).
-map_include_([H0|T], F, Accum0, List) :-
+    map_include_(L0, L, F).
+
+map_include_([], [], _).
+map_include_([H0|T0], List, F) :-
     (   call(F, H0, H)
-    ->  map_include_(T, F, [H|Accum0], List)
-    ;   map_include_(T, F,    Accum0 , List)
+    ->  List = [H|T],
+        map_include_(T0, T, F)
+    ;   map_include_(T0, List, F)
     ).
 
 
