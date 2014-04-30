@@ -7,6 +7,7 @@
           , minimum/2
           , minimum_by/3
           , msort_r/2
+          , iterate/3
           , sort_r/2
           , split/3
           , take/3
@@ -196,6 +197,39 @@ minimum_by([H|T], Compare, MinSoFar, Minimum) :-
         minimum_by(T, Compare, H, Minimum)
     ; % otherwise ->
         minimum_by(T, Compare, MinSoFar, Minimum)
+    ).
+
+
+%% iterate(:Goal, +State, -List)
+%
+%  List is a lazy (possibly infinite) list whose elements are
+%  the result of repeatedly applying Goal to State. Goal may fail to end
+%  the list. Goal is called like
+%
+%      call(Goal, State0, State, Value)
+%
+%  The first value in List is the value produced by calling
+%  Goal with State. For example, a lazy, infinite list of positive
+%  integers might be defined with:
+%
+%      incr(A,B,A) :- succ(A,B).
+%      integers(Z) :- iterate(incr,1,Z). % Z = [1,2,3,...]
+%
+%  Calling iterate/3 with a mode different than described in the
+%  modeline throws an exception. Other modes may be supported in the
+%  future, so don't rely on the exception to catch your mode errors.
+:- meta_predicate iterate(3,+,-).
+iterate(Goal, State, List) :-
+    must_be(nonvar, Goal),
+    must_be(nonvar, State),
+    freeze(List, iterate_(Goal, State, List)).
+
+iterate_(Goal, State0, List) :-
+    ( call(Goal, State0, State, X) ->
+        List = [X|Xs],
+        iterate(Goal, State, Xs)
+    ; % goal failed, list is done ->
+        List = []
     ).
 
 
