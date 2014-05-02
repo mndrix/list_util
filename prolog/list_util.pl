@@ -9,11 +9,14 @@
           , minimum_by/3
           , msort_r/2
           , iterate/3
+          , sort_by/3
           , sort_r/2
           , split/3
           , take/3
           , xfy_list/3
           ]).
+:- use_module(library(apply), [maplist/3]).
+:- use_module(library(pairs), [map_list_to_pairs/3, pairs_values/2]).
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
 
@@ -267,6 +270,28 @@ lines_(Stream-Pos0, Stream-Pos, Line) :-
         stream_property(Stream, position(Pos)),
         Line = Tentative
     ).
+
+%% sort_by(:Goal, +List:list, -Sorted:list) is det.
+%
+%  Sort a List of elements using Goal to project
+%  something out of each element. This is often more natural than
+%  creating an auxiliary predicate for predsort/3. For example, to sort
+%  a list of atoms by their length:
+%
+%      ?- sort_by(atom_length, [cat,hi,house], Atoms).
+%      Atoms = [hi,cat,house].
+%
+%  Standard term comparison is used to compare the results of Goal.
+%  Duplicates are _not_ removed. The sort is stable.
+%
+%  If Goal is expensive, sort_by/3 is more efficient than predsort/3
+%  because Goal is called once per element, O(N), rather than
+%  repeatedly per element, O(N log N).
+:- meta_predicate sort_by(2,+,-).
+sort_by(Goal, List, Sorted) :-
+    map_list_to_pairs(Goal, List, Pairs),
+    keysort(Pairs, SortedPairs),
+    pairs_values(SortedPairs, Sorted).
 
 %%	sort_r(+List:list, -ReverseSorted:list) is det.
 %
