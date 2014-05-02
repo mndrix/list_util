@@ -221,7 +221,7 @@ minimum_by([H|T], Compare, MinSoFar, Minimum) :-
 %  Calling iterate/3 with a mode different than described in the
 %  modeline throws an exception. Other modes may be supported in the
 %  future, so don't rely on the exception to catch your mode errors.
-:- meta_predicate iterate(3,+,-).
+:- meta_predicate iterate(3,+,?), iterate_(3,+,?).
 iterate(Goal, State, List) :-
     must_be(nonvar, Goal),
     must_be(nonvar, State),
