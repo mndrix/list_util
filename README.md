@@ -20,8 +20,9 @@ predicate.
 
 # Changes in this Version
 
-    * Add sort_by/3
-    * Better meta_predicate definition for iterate/3
+    * Add lazy_include/3
+    * Add positive_integers/1
+    * Add tests for sort_by/3
 
 # Installation
 
