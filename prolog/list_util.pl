@@ -9,6 +9,7 @@
           , minimum_by/3
           , msort_r/2
           , iterate/3
+          , positive_integers/1
           , sort_by/3
           , sort_r/2
           , split/3
@@ -270,6 +271,15 @@ lines_(Stream-Pos0, Stream-Pos, Line) :-
         stream_property(Stream, position(Pos)),
         Line = Tentative
     ).
+
+%% positive_integers(-List:list(positive_integer)) is det.
+%
+%  Unifies List with a lazy, infinite list of all positive integers.
+positive_integers(List) :-
+    iterate(positive_integers_, 1, List).
+
+positive_integers_(A,B,A) :-
+    succ(A,B).
 
 %% sort_by(:Goal, +List:list, -Sorted:list) is det.
 %
