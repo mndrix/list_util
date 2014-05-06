@@ -1,6 +1,7 @@
 :- module(list_util,
           [ drop/3
           , keysort_r/2
+          , lazy_include/3
           , lines/2
           , map_include/3
           , maximum/2
@@ -20,6 +21,9 @@
 :- use_module(library(pairs), [map_list_to_pairs/3, pairs_values/2]).
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
+
+% TODO look through list library of Amzi! Prolog for ideas: http://www.amzi.com/manuals/amzi/libs/list.htm
+% TODO look through ECLiPSe list library: http://www.eclipseclp.org/doc/bips/lib/lists/index.html
 
 %%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
@@ -137,6 +141,8 @@ map_include_([H0|T0], List, F) :-
         map_include_(T0, T, F)
     ;   map_include_(T0, List, F)
     ).
+% TODO implement map_include/4
+% TODO implement map_include/5
 
 
 %%	maximum(?List, ?Maximum) is semidet.
@@ -280,6 +286,23 @@ positive_integers(List) :-
 
 positive_integers_(A,B,A) :-
     succ(A,B).
+
+%% lazy_include(+Goal, +List1, -List2) is det.
+%
+%  Like include/3 but produces List2 lazily. This predicate is helpful
+%  when List1 is infinite or very large.
+:- meta_predicate lazy_include(1,+,-), lazy_include_(+,1,-).
+lazy_include(Goal, Original, Lazy) :-
+    freeze(Lazy, lazy_include_(Original, Goal, Lazy)).
+
+lazy_include_([], _, []).
+lazy_include_([H|T], Goal, Lazy) :-
+    ( call(Goal, H) ->
+        Lazy = [H|Rest],
+        freeze(Rest, lazy_include_(T, Goal, Rest))
+    ; % exclude this element ->
+        lazy_include_(T, Goal, Lazy)
+    ).
 
 %% sort_by(:Goal, +List:list, -Sorted:list) is det.
 %
