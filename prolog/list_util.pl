@@ -1,5 +1,6 @@
 :- module(list_util,
           [ drop/3
+          , iterate/3
           , keysort_r/2
           , lazy_include/3
           , lines/2
@@ -9,7 +10,6 @@
           , minimum/2
           , minimum_by/3
           , msort_r/2
-          , iterate/3
           , positive_integers/1
           , sort_by/3
           , sort_r/2
