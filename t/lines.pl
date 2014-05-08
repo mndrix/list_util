@@ -8,7 +8,7 @@ sample(Lines) :-
 
 length :-
     sample(Lines),
-    once(length(Lines, Len)),  % built in length leaves choicepoints for lazy lists
+    length(Lines, Len),  % built in length leaves choicepoints for lazy lists
     Len == 4.
 
 content :-
