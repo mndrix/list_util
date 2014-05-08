@@ -10,6 +10,7 @@
           , minimum/2
           , minimum_by/3
           , msort_r/2
+          , oneof/2
           , positive_integers/1
           , sort_by/3
           , sort_r/2
@@ -116,6 +117,14 @@ drop([_|T], N1, Rest) :-
     succ(N0, N1),
     drop(T, N0, Rest).
 
+
+%% oneof(List:list(T), Element:T) is semidet.
+%
+%  Same as memberchk/2 with argument order reversed. This form is
+%  helpful when used as the first argument to predicates like include/3
+%  and exclude/3.
+oneof(Xs,X) :-
+    memberchk(X, Xs).
 
 
 %%	map_include(:Goal:callable, +In:list, -Out:list) is det.
