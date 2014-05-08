@@ -15,12 +15,12 @@ people([ person("John", 27)
 
 by_name :-
     people(People),
-    sort_by(person_name, People, Sorted),
+    sort_with(person_name, People, Sorted),
     maplist(person_name, Sorted, Names),
     Names == ["John","Sue","Tom","Will"].
 
 by_age :-
     people(People),
-    sort_by(person_age, People, Sorted),
+    sort_with(person_age, People, Sorted),
     maplist(person_age, Sorted, Ages),
     Ages == [18, 27, 30, 63].

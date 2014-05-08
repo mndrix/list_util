@@ -14,6 +14,7 @@
           , positive_integers/1
           , sort_by/3
           , sort_r/2
+          , sort_with/3
           , split/3
           , take/3
           , xfy_list/3
@@ -282,24 +283,34 @@ lazy_include_([H|T], Goal, Lazy) :-
         lazy_include_(T, Goal, Lazy)
     ).
 
+
 %% sort_by(:Goal, +List:list, -Sorted:list) is det.
+%
+%  See sort_with/3. This name was assigned to the wrong predicate in
+%  earlier versions of this library.  It now throws an exception.
+%  It will eventually be replaced with a different implementation.
+:- meta_predicate sort_by(2,+,-).
+sort_by(_,_,_) :-
+    throw("Predicate sort_by/2 does not exist. Use sort_with/2 instead").
+
+%% sort_with(:Goal, +List:list, -Sorted:list) is det.
 %
 %  Sort a List of elements using Goal to project
 %  something out of each element. This is often more natural than
 %  creating an auxiliary predicate for predsort/3. For example, to sort
 %  a list of atoms by their length:
 %
-%      ?- sort_by(atom_length, [cat,hi,house], Atoms).
+%      ?- sort_with(atom_length, [cat,hi,house], Atoms).
 %      Atoms = [hi,cat,house].
 %
 %  Standard term comparison is used to compare the results of Goal.
 %  Duplicates are _not_ removed. The sort is stable.
 %
-%  If Goal is expensive, sort_by/3 is more efficient than predsort/3
+%  If Goal is expensive, sort_with/3 is more efficient than predsort/3
 %  because Goal is called once per element, O(N), rather than
 %  repeatedly per element, O(N log N).
-:- meta_predicate sort_by(2,+,-).
-sort_by(Goal, List, Sorted) :-
+:- meta_predicate sort_with(2,+,-).
+sort_with(Goal, List, Sorted) :-
     map_list_to_pairs(Goal, List, Pairs),
     keysort(Pairs, SortedPairs),
     pairs_values(SortedPairs, Sorted).
