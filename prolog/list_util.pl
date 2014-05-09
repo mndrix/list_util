@@ -20,7 +20,6 @@
           , take_while/3
           , xfy_list/3
           ]).
-:- use_module(library(apply), [maplist/3]).
 :- use_module(library(pairs), [map_list_to_pairs/3, pairs_values/2]).
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
