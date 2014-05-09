@@ -17,6 +17,7 @@
           , sort_with/3
           , split/3
           , take/3
+          , take_while/3
           , xfy_list/3
           ]).
 :- use_module(library(apply), [maplist/3]).
@@ -80,6 +81,31 @@ take([H|T], N1, [H|Rest]) :-
     N1 > 0,
     succ(N0, N1),
     take(T, N0, Rest).
+
+
+%% take_while(:Goal, +List1, -List2) is det.
+%
+%  True if List2 is the longest prefix of List1 for which Goal succeeds.
+%  For example,
+%
+%  ==
+%  even(X) :- 0 is X mod 2.
+%
+%  ?- take_while(even, [2,4,6,9,12], Xs).
+%  Xs = [2,4,6].
+%  ==
+:- meta_predicate take_while(1,+,-).
+take_while(Goal, List, Prefix) :-
+    take_while_(List, Prefix, Goal).
+
+take_while_([], [], _).
+take_while_([H|T0], Prefix, Goal) :-
+    ( call(Goal, H) ->
+        Prefix = [H|T],
+        take_while_(T0, T, Goal)
+    ; % otherwise ->
+        Prefix = []
+    ).
 
 
 % Define an empty_list type to assist with drop/3 documentation
