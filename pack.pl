@@ -1,8 +1,8 @@
 name(list_util).
 title('Predicates for working with lists').
 
-version('0.4.0').
-download('http://packs.ndrix.com/list_util/list_util-0.4.0.tgz').
+version('0.5.0').
+download('http://packs.ndrix.com/list_util/list_util-0.5.0.tgz').
 
 author( 'Michael Hendricks', 'michael@ndrix.org' ).
 packager( 'Michael Hendricks', 'michael@ndrix.org' ).

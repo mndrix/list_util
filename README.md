@@ -20,9 +20,12 @@ predicate.
 
 # Changes in this Version
 
-    * Add lazy_include/3
-    * Add positive_integers/1
-    * Add tests for sort_by/3
+    * Add oneof/2
+    * Add group_with/3
+    * Add take_while/3
+    * lines/2: support streams w/o set_stream_position/2
+    * Rename sort_by/2 to sort_with/2 (breaking change)
+    * Various code cleanups
 
 # Installation
 
