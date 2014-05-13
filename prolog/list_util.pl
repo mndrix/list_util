@@ -1,5 +1,6 @@
 :- module(list_util,
           [ drop/3
+          , group_with/3
           , iterate/3
           , keysort_r/2
           , lazy_include/3
@@ -20,7 +21,7 @@
           , take_while/3
           , xfy_list/3
           ]).
-:- use_module(library(pairs), [map_list_to_pairs/3, pairs_values/2]).
+:- use_module(library(pairs), [group_pairs_by_key/2, map_list_to_pairs/3, pairs_values/2]).
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
 
@@ -307,6 +308,26 @@ lazy_include_([H|T], Goal, Lazy) :-
     ; % exclude this element ->
         lazy_include_(T, Goal, Lazy)
     ).
+
+
+%% group_with(:Goal, +List:list, -Grouped:list(list)) is det.
+%
+%  Groups elements of List using Goal to project something out of each
+%  element. Elements are first sorted based on the projected value (like
+%  sort_with/3) and then placed into groups for which the projected
+%  values unify. Goal is invoked as
+%  =|call(Goal,Elem,Projection)|=.
+%
+%  For example,
+%
+%      ?- group_with(atom_length, [a,hi,bye,b], Groups).
+%      Groups = [[a,b],[hi],[bye]]
+:- meta_predicate group_with(2,+,-).
+group_with(Goal,List,Groups) :-
+    map_list_to_pairs(Goal, List, Pairs),
+    keysort(Pairs, Sorted),
+    group_pairs_by_key(Sorted, KeyedGroups),
+    pairs_values(KeyedGroups, Groups).
 
 
 %% sort_by(:Goal, +List:list, -Sorted:list) is det.
