@@ -20,12 +20,8 @@ predicate.
 
 # Changes in this Version
 
-    * Add oneof/2
-    * Add group_with/3
-    * Add take_while/3
-    * lines/2: support streams w/o set_stream_position/2
-    * Rename sort_by/2 to sort_with/2 (breaking change)
-    * Various code cleanups
+    * Add span/4
+    * Add drop_while/3
 
 # Installation
 
