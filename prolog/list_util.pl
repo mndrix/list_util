@@ -17,6 +17,7 @@
           , sort_by/3
           , sort_r/2
           , sort_with/3
+          , span/4
           , split/3
           , take/3
           , take_while/3
@@ -97,16 +98,7 @@ take([H|T], N1, [H|Rest]) :-
 %  ==
 :- meta_predicate take_while(1,+,-).
 take_while(Goal, List, Prefix) :-
-    take_while_(List, Prefix, Goal).
-
-take_while_([], [], _).
-take_while_([H|T0], Prefix, Goal) :-
-    ( call(Goal, H) ->
-        Prefix = [H|T],
-        take_while_(T0, T, Goal)
-    ; % otherwise ->
-        Prefix = []
-    ).
+    span(Goal,List,Prefix,_).
 
 
 % Define an empty_list type to assist with drop/3 documentation
@@ -159,15 +151,43 @@ drop([_|T], N1, Rest) :-
 %  ==
 :- meta_predicate drop_while(1,+,-).
 drop_while(Goal, List, Suffix) :-
-    drop_while_(List, Suffix, Goal).
+    span(Goal,List,_,Suffix).
 
-drop_while_([], [], _).
-drop_while_([H|T], Suffix, Goal) :-
+
+%% span(:Goal, +List, -Prefix, -Suffix) is det.
+%
+%  True if Prefix is the longest prefix of List for which Goal
+%  succeeds and Suffix is the rest. For any Goal, it is true that
+%  =|append(Prefix,Suffix,List)|=. span/4 behaves as if it were
+%  implement as follows (but it's more efficient):
+%
+%      span(Goal,List,Prefix,Suffix) :-
+%          take_while(Goal,List,Prefix),
+%          drop_while(Goal,List,Suffix).
+%
+%  For example,
+%
+%  ==
+%  even(X) :- 0 is X mod 2.
+%
+%  ?- span(even, [2,4,6,9,12], Prefix, Suffix).
+%  Prefix = [2,4,6],
+%  Suffix = [9,12].
+%  ==
+:- meta_predicate span(1,+,-,-).
+span(Goal, List, Prefix, Suffix) :-
+    span_(List, Prefix, Suffix, Goal).
+
+span_([], [], [], _).
+span_([H|T0], Prefix, Suffix, Goal) :-
     ( call(Goal, H) ->
-        drop_while_(T, Suffix, Goal)
+        Prefix = [H|T],
+        span_(T0, T, Suffix, Goal)
     ; % otherwise ->
-        Suffix = [H|T]
+        Prefix = [],
+        Suffix = [H|T0]
     ).
+
 
 
 %% oneof(List:list(T), Element:T) is semidet.
