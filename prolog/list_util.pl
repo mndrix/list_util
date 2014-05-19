@@ -1,5 +1,6 @@
 :- module(list_util,
           [ drop/3
+          , drop_while/3
           , group_with/3
           , iterate/3
           , keysort_r/2
@@ -143,6 +144,30 @@ drop([_|T], N1, Rest) :-
     N1 > 0,
     succ(N0, N1),
     drop(T, N0, Rest).
+
+
+%% drop_while(:Goal, +List1, -List2) is det.
+%
+%  True if List2 is the suffix remaining after
+%  =|take_while(Goal,List1,_)|=.  For example,
+%
+%  ==
+%  even(X) :- 0 is X mod 2.
+%
+%  ?- drop_while(even, [2,4,6,9,12], Xs).
+%  Xs = [9,12].
+%  ==
+:- meta_predicate drop_while(1,+,-).
+drop_while(Goal, List, Suffix) :-
+    drop_while_(List, Suffix, Goal).
+
+drop_while_([], [], _).
+drop_while_([H|T], Suffix, Goal) :-
+    ( call(Goal, H) ->
+        drop_while_(T, Suffix, Goal)
+    ; % otherwise ->
+        Suffix = [H|T]
+    ).
 
 
 %% oneof(List:list(T), Element:T) is semidet.
