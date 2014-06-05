@@ -174,7 +174,7 @@ drop_while(Goal, List, Suffix) :-
 %  Prefix = [2,4,6],
 %  Suffix = [9,12].
 %  ==
-:- meta_predicate span(1,+,-,-).
+:- meta_predicate span(1,+,-,-), span_(+,-,-,1).
 span(Goal, List, Prefix, Suffix) :-
     span_(List, Prefix, Suffix, Goal).
 
