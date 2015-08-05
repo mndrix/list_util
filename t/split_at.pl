@@ -2,10 +2,10 @@
 :- use_module(library(tap)).
 
 
-none :-
+zero :-
   split_at(0, [a,b], [], [a,b]).
 
-none_empty :-
+zero_empty :-
   split_at(0, [], [], []).
 
 n_small :-
@@ -22,22 +22,19 @@ unbound_l :-
   L = [a,b,c,d].
 
 unbound_l_huge :-
-  aggregate_all(count,
-    (  split_at(400, L, [a,b,c], []),
-       L = [a,b,c]
-    ), 1).
+  aggregate_all(count, (split_at(400, L, [a,b,c], []), L = [a,b,c]), 1).
 
 unbound_l_take :-
   split_at(3, L, Take, [d]),
-  forall(member(T, Take), var(T)),
   L = [A,B,C,d],
-  maplist(var, [A,B,C]),
+  Take = [A,B,C],
   maplist(var, Take).
 
-unbound_l_take_huge :-
-  split_at(3, L, Take, [c,d,e]),
-  append(Take, [c,d,e], L),
-  forall(member(T, Take), var(T)).
+unbound_l_take_small :-
+  split_at(3, L, Take, [d,e,f]),
+  Take = [A,B,C],
+  L = [A,B,C,d,e,f],
+  maplist(var, Take).
 
 unbound_l_take_empty :-
   forall(split_at(5, L, Take, []),
@@ -49,4 +46,9 @@ unbound_l_take_empty :-
   ),
   L = Take.
 
-	
+zero_unbound_l_take :-
+  split_at(0, L, Take, [a,b]),
+  L = [a,b],
+  Take = [].
+
+
