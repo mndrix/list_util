@@ -75,16 +75,8 @@ split([H|T], Div, [[H|First]|Rest]) :-
 %	?- take(L, 2, [a,b]).
 %	L = [a, b|_G1055].
 %	==
-take([], N, []) :-
-    N > 0,
-    !.  % optimization
-take(_, 0, []) :-
-    !.  % optimization
-take([H|T], N1, [H|Rest]) :-
-    N1 > 0,
-    succ(N0, N1),
-    take(T, N0, Rest).
-
+take(List, N, Front) :-
+    split_at(N, List, Front, _).
 
 %%	split_at(+N:nonneg, ?Xs:list, ?Take:list, ?Rest:list)
 %
