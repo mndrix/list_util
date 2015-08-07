@@ -75,8 +75,20 @@ split([H|T], Div, [[H|First]|Rest]) :-
 %  ?- take(2, L, [a,b]).
 %  L = [a, b|_G1055].
 %  ==
+take(List, N, Front) :-
+    % support deprecated argument order
+    ( integer(N)
+    ; nonvar(List), functor(List,[],0)
+    ; nonvar(List), functor(List,'[|]',2)
+    ),
+    !,
+    print_message(warning, deprecated_argument_order(take)),
+    split_at(N, List, Front, _).
 take(N, List, Front) :-
     split_at(N, List, Front, _).
+
+prolog:message(deprecated_argument_order(Predicate)) -->
+    ['~s(List,N,Front) argument order is deprecated. Use ~s(N,List,Front) instead.'-[Predicate,Predicate]].
 
 %% split_at(+N:nonneg, ?Xs:list, ?Take:list, ?Rest:list)
 %
@@ -159,6 +171,15 @@ error:has_type(empty_list, []).
 %  L = [_G1024] ;
 %  L = [_G1024, _G1027].
 %  ==
+drop(List, N, Rest) :-
+    % support deprecated argument order
+    ( integer(N)
+    ; nonvar(List), functor(List,[],0)
+    ; nonvar(List), functor(List,'[|]',2)
+    ),
+    !,
+    print_message(warning, deprecated_argument_order(drop)),
+    drop_(List, N, Rest).
 drop(N, List, Rest) :-
     drop_(List, N, Rest).
 
