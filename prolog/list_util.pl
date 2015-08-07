@@ -19,6 +19,7 @@
           , sort_with/3
           , span/4
           , split/3
+          , split_at/4
           , take/3
           , take_while/3
           , xfy_list/3
@@ -83,6 +84,44 @@ take([H|T], N1, [H|Rest]) :-
     N1 > 0,
     succ(N0, N1),
     take(T, N0, Rest).
+
+
+%%	split_at(+N:nonneg, ?Xs:list, ?Take:list, ?Rest:list)
+%
+%	True if Take is a list containing the first N elements of Xs and Rest
+%	contains the remaining elements. If N is larger than the length of Xs,
+%	=|Xs = Take|=.
+%
+%	For example,
+%	==
+%	?- split_at(3, [a,b,c,d], Take, Rest).
+%	Take = [a, b, c],
+%	Rest = [d].
+%
+%	?- split_at(5, [a,b,c], Take, Rest).
+%	Take = [a, b, c],
+%	Rest = [].
+%
+%	?- split_at(2, Xs, Take, [c,d]).
+%	Xs = [_G3219, _G3225, c, d],
+%	Take = [_G3219, _G3225].
+%
+%	?- split_at(1, Xs, Take, []).
+%	Xs = Take, Take = [] ;
+%	Xs = Take, Take = [_G3810].
+%	==
+split_at(N,Xs,Take,Rest) :-
+    split_at_(Xs,N,Take,Rest).
+
+split_at_(Rest, 0, [], Rest) :- !. % optimization
+split_at_([], N, [], []) :-
+    % cannot optimize here because (+, -, -, -) would be wrong,
+    % which could possibly be a useful generator.
+    N > 0.
+split_at_([X|Xs], N, [X|Take], Rest) :-
+    N > 0,
+    succ(N0, N),
+    split_at(N0, Xs, Take, Rest).
 
 
 %% take_while(:Goal, +List1, -List2) is det.
