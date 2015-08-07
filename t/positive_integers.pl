@@ -9,5 +9,5 @@ append :-
 
 take :-
     positive_integers(Z),
-    take(Z, 7, Xs),
+    take(7, Z, Xs),
     Xs = [1,2,3,4,5,6,7].

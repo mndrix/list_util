@@ -59,23 +59,23 @@ split([H|T], Div, [[H|First]|Rest]) :-
     split(T, Div, [First|Rest]).
 
 
-%% take(?List:list, +N:nonneg, ?Front:list) is det.
+%% take(+N:nonneg, ?List:list, ?Front:list) is det.
 %
 %  True if Front contains the first N elements of List.
 %  If N is larger than List's length, =|List=Front|=.
 %
 %  For example,
 %  ==
-%  ?- take([1,2,3,4], 2, L).
+%  ?- take(2, [1,2,3,4], L).
 %  L = [1, 2].
 %
-%  ?- take([1], 2, L).
+%  ?- take(2, [1], L).
 %  L = [1].
 %
-%  ?- take(L, 2, [a,b]).
+%  ?- take(2, L, [a,b]).
 %  L = [a, b|_G1055].
 %  ==
-take(List, N, Front) :-
+take(N, List, Front) :-
     split_at(N, List, Front, _).
 
 %% split_at(+N:nonneg, ?Xs:list, ?Take:list, ?Rest:list)
@@ -136,8 +136,8 @@ take_while(Goal, List, Prefix) :-
 :- multifile error:has_type/2.
 error:has_type(empty_list, []).
 
-%% drop(?List:list, +N:nonneg, ?Rest:list) is det.
-%% drop(-List:list, +N:positive_integer, +Rest:empty_list) is multi.
+%% drop(+N:nonneg, ?List:list, ?Rest:list) is det.
+%% drop(+N:positive_integer, -List:list, +Rest:empty_list) is multi.
 %
 %
 %  True if Rest is what remains of List after dropping the first N
@@ -145,28 +145,31 @@ error:has_type(empty_list, []).
 %
 %  For example,
 %  ==
-%  ?- drop([a,b,c], 1, L).
+%  ?- drop(1, [a,b,c], L).
 %  L = [b, c].
 %
-%  ?- drop([a,b,c], 10, L).
+%  ?- drop(10, [a,b,c], L).
 %  L = [].
 %
-%  ?- drop(L, 1, [2,3]).
+%  ?- drop(1, L, [2,3]).
 %  L = [_G1054, 2, 3].
 %
-%  ?- drop(L, 2, []).
+%  ?- drop(2, L, []).
 %  L = [] ;
 %  L = [_G1024] ;
 %  L = [_G1024, _G1027].
 %  ==
-drop(L, 0, L) :-
+drop(N, List, Rest) :-
+    drop_(List, N, Rest).
+
+drop_(L, 0, L) :-
     !.  % optimization
-drop([], N, []) :-
+drop_([], N, []) :-
     N > 0.
-drop([_|T], N1, Rest) :-
+drop_([_|T], N1, Rest) :-
     N1 > 0,
     succ(N0, N1),
-    drop(T, N0, Rest).
+    drop_(T, N0, Rest).
 
 
 %% drop_while(:Goal, +List1, -List2) is det.

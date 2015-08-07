@@ -1,9 +1,8 @@
 # Synopsis
 
     :- use_module(list_util, [take/3]).
-    main :-
-        take([hello, world, etc], 2, Words),
-        writeln(Words).
+    ?- take(2, [hello, world, etc], Words).
+    Words = [hello, world].
 
 # Description
 
