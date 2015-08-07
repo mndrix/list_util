@@ -19,10 +19,10 @@ n_huge_empty :-
 
 unbound_l :-
   split_at(2, L, [a,b], [c,d]),
-  L = [a,b,c,d].
+  L == [a,b,c,d].
 
 unbound_l_huge :-
-  aggregate_all(count, (split_at(400, L, [a,b,c], []), L = [a,b,c]), 1).
+  aggregate_all(count, (split_at(400, L, [a,b,c], []), L == [a,b,c]), 1).
 
 unbound_l_take :-
   split_at(3, L, Take, [d]),
@@ -48,7 +48,5 @@ unbound_l_take_empty :-
 
 zero_unbound_l_take :-
   split_at(0, L, Take, [a,b]),
-  L = [a,b],
-  Take = [].
-
-
+  L == [a,b],
+  Take == [].
