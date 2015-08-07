@@ -17,11 +17,6 @@ fewer definitions than Haskell needs.
 See `list_util.pl` documentation below for details about each exported
 predicate.
 
-# Changes in this Version
-
-    * Add span/4
-    * Add drop_while/3
-
 # Installation
 
 Using SWI-Prolog 6.3 or later:
