@@ -12,17 +12,18 @@ n_small :-
   split_at(3, [a,b,c,d,e,f], [a,b,c], [d,e,f]).
 
 n_huge :-
-  aggregate_all(count, split_at(1000, [a,b,c], [a,b,c], []), 1).
+  split_at(1000, [a,b,c], [a,b,c], []).
 
 n_huge_empty :-
-  aggregate_all(count, split_at(1000, [], [], []), 1).
+  split_at(1000, [], [], []).
 
 unbound_l :-
   split_at(2, L, [a,b], [c,d]),
   L == [a,b,c,d].
 
 unbound_l_huge :-
-  aggregate_all(count, (split_at(400, L, [a,b,c], []), L == [a,b,c]), 1).
+  split_at(400, L, [a,b,c], []),
+  L == [a,b,c].
 
 unbound_l_take :-
   split_at(3, L, Take, [d]),

@@ -100,8 +100,7 @@ take([H|T], N1, [H|Rest]) :-
 %
 %       ?- split_at(5, [a,b,c], Take, Rest).
 %       Take = [a, b, c],
-%       Rest = [] ;
-%       false.
+%       Rest = [].
 %
 %       ?- split_at(2, Xs, Take, [c,d]).
 %       Xs = [_G3219, _G3225, c, d],
@@ -111,12 +110,15 @@ take([H|T], N1, [H|Rest]) :-
 %       Xs = Take, Take = [] ;
 %       Xs = Take, Take = [_G3810].
 %       ==
-split_at(0, Rest, [], Rest) :- !. % optimization
-split_at(N, [], [], []) :-
+split_at(N,Xs,Take,Rest) :-
+    split_at_(Xs,N,Take,Rest).
+
+split_at_(Rest, 0, [], Rest) :- !. % optimization
+split_at_([], N, [], []) :-
     % cannot optimize here because (+, -, -, -) would be wrong,
     % which could possibly be a useful generator.
     N > 0.
-split_at(N, [X|Xs], [X|Take], Rest) :-
+split_at_([X|Xs], N, [X|Take], Rest) :-
     N > 0,
     succ(N0, N),
     split_at(N0, Xs, Take, Rest).
