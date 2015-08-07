@@ -33,22 +33,22 @@
 % TODO look through list library of Amzi! Prolog for ideas: http://www.amzi.com/manuals/amzi/libs/list.htm
 % TODO look through ECLiPSe list library: http://www.eclipseclp.org/doc/bips/lib/lists/index.html
 
-%%  split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
+%% split(?Combined:list, ?Separator, ?Separated:list(list)) is det.
 %
-%	True if lists in Separated joined together with Separator form
-%	Combined.  Can be used to split a list into sublists
-%	or combine several sublists into a single list.
+%  True if lists in Separated joined together with Separator form
+%  Combined.  Can be used to split a list into sublists
+%  or combine several sublists into a single list.
 %
-%	For example,
-%	==
-%	?- portray_text(true).
+%  For example,
+%  ==
+%  ?- portray_text(true).
 %
-%	?- split("one,two,three", 0',, Parts).
-%	Parts = ["one", "two", "three"].
+%  ?- split("one,two,three", 0',, Parts).
+%  Parts = ["one", "two", "three"].
 %
-%	?- split(Codes, 0',, ["alpha", "beta"]).
-%	Codes = "alpha,beta".
-%	==
+%  ?- split(Codes, 0',, ["alpha", "beta"]).
+%  Codes = "alpha,beta".
+%  ==
 split([], _, [[]]) :-
     !.  % optimization
 split([Div|T], Div, [[]|Rest]) :-
@@ -59,49 +59,49 @@ split([H|T], Div, [[H|First]|Rest]) :-
     split(T, Div, [First|Rest]).
 
 
-%%	take(?List:list, +N:nonneg, ?Front:list) is det.
+%% take(?List:list, +N:nonneg, ?Front:list) is det.
 %
-%	True if Front contains the first N elements of List.
-%	If N is larger than List's length, =|List=Front|=.
+%  True if Front contains the first N elements of List.
+%  If N is larger than List's length, =|List=Front|=.
 %
-%	For example,
-%	==
-%	?- take([1,2,3,4], 2, L).
-%	L = [1, 2].
+%  For example,
+%  ==
+%  ?- take([1,2,3,4], 2, L).
+%  L = [1, 2].
 %
-%	?- take([1], 2, L).
-%	L = [1].
+%  ?- take([1], 2, L).
+%  L = [1].
 %
-%	?- take(L, 2, [a,b]).
-%	L = [a, b|_G1055].
-%	==
+%  ?- take(L, 2, [a,b]).
+%  L = [a, b|_G1055].
+%  ==
 take(List, N, Front) :-
     split_at(N, List, Front, _).
 
-%%	split_at(+N:nonneg, ?Xs:list, ?Take:list, ?Rest:list)
+%% split_at(+N:nonneg, ?Xs:list, ?Take:list, ?Rest:list)
 %
-%	True if Take is a list containing the first N elements of Xs and Rest
-%	contains the remaining elements. If N is larger than the length of Xs,
-%	=|Xs = Take|=.
+%  True if Take is a list containing the first N elements of Xs and Rest
+%  contains the remaining elements. If N is larger than the length of Xs,
+%  =|Xs = Take|=.
 %
-%	For example,
-%	==
-%	?- split_at(3, [a,b,c,d], Take, Rest).
-%	Take = [a, b, c],
-%	Rest = [d].
+%  For example,
+%  ==
+%  ?- split_at(3, [a,b,c,d], Take, Rest).
+%  Take = [a, b, c],
+%  Rest = [d].
 %
-%	?- split_at(5, [a,b,c], Take, Rest).
-%	Take = [a, b, c],
-%	Rest = [].
+%  ?- split_at(5, [a,b,c], Take, Rest).
+%  Take = [a, b, c],
+%  Rest = [].
 %
-%	?- split_at(2, Xs, Take, [c,d]).
-%	Xs = [_G3219, _G3225, c, d],
-%	Take = [_G3219, _G3225].
+%  ?- split_at(2, Xs, Take, [c,d]).
+%  Xs = [_G3219, _G3225, c, d],
+%  Take = [_G3219, _G3225].
 %
-%	?- split_at(1, Xs, Take, []).
-%	Xs = Take, Take = [] ;
-%	Xs = Take, Take = [_G3810].
-%	==
+%  ?- split_at(1, Xs, Take, []).
+%  Xs = Take, Take = [] ;
+%  Xs = Take, Take = [_G3810].
+%  ==
 split_at(N,Xs,Take,Rest) :-
     split_at_(Xs,N,Take,Rest).
 
@@ -136,29 +136,29 @@ take_while(Goal, List, Prefix) :-
 :- multifile error:has_type/2.
 error:has_type(empty_list, []).
 
-%%	drop(?List:list, +N:nonneg, ?Rest:list) is det.
-%%	drop(-List:list, +N:positive_integer, +Rest:empty_list) is multi.
+%% drop(?List:list, +N:nonneg, ?Rest:list) is det.
+%% drop(-List:list, +N:positive_integer, +Rest:empty_list) is multi.
 %
 %
-%	True if Rest is what remains of List after dropping the first N
-%	elements.  If N is greater than List's length, =|Rest = []|=.
+%  True if Rest is what remains of List after dropping the first N
+%  elements.  If N is greater than List's length, =|Rest = []|=.
 %
-%	For example,
-%	==
-%	?- drop([a,b,c], 1, L).
-%	L = [b, c].
+%  For example,
+%  ==
+%  ?- drop([a,b,c], 1, L).
+%  L = [b, c].
 %
-%	?- drop([a,b,c], 10, L).
-%	L = [].
+%  ?- drop([a,b,c], 10, L).
+%  L = [].
 %
-%	?- drop(L, 1, [2,3]).
-%	L = [_G1054, 2, 3].
+%  ?- drop(L, 1, [2,3]).
+%  L = [_G1054, 2, 3].
 %
-%	?- drop(L, 2, []).
-%	L = [] ;
-%	L = [_G1024] ;
-%	L = [_G1024, _G1027].
-%	==
+%  ?- drop(L, 2, []).
+%  L = [] ;
+%  L = [_G1024] ;
+%  L = [_G1024, _G1027].
+%  ==
 drop(L, 0, L) :-
     !.  % optimization
 drop([], N, []) :-
@@ -230,19 +230,19 @@ oneof(Xs,X) :-
     memberchk(X, Xs).
 
 
-%%	map_include(:Goal:callable, +In:list, -Out:list) is det.
+%% map_include(:Goal:callable, +In:list, -Out:list) is det.
 %
-%	True if Out (elements =Yi=) contains those elements of In
-%	(=Xi=) for which
-%	=|call(Goal, Xi, Yi)|= is true.  If =|call(Goal, Xi, Yi)|= fails,
-%	the corresponding element is omitted from Out.  If Goal generates
-%	multiple solutions, only the first one is taken.
+%  True if Out (elements =Yi=) contains those elements of In
+%  (=Xi=) for which
+%  =|call(Goal, Xi, Yi)|= is true.  If =|call(Goal, Xi, Yi)|= fails,
+%  the corresponding element is omitted from Out.  If Goal generates
+%  multiple solutions, only the first one is taken.
 %
-%	For example, assuming =|f(X,Y) :- number(X), succ(X,Y)|=
-%	==
-%	?- map_include(f, [1,a,3], L).
-%	L = [2, 4].
-%	==
+%  For example, assuming =|f(X,Y) :- number(X), succ(X,Y)|=
+%  ==
+%  ?- map_include(f, [1,a,3], L).
+%  L = [2, 4].
+%  ==
 :- meta_predicate map_include(2, +, -).
 :- meta_predicate map_include_(+, -, 2).
 map_include(F, L0, L) :-
@@ -259,22 +259,22 @@ map_include_([H0|T0], List, F) :-
 % TODO implement map_include/5
 
 
-%%	maximum(?List, ?Maximum) is semidet.
+%% maximum(?List, ?Maximum) is semidet.
 %
-%   True if Maximum is the largest element of List, according to
-%   compare/3.  The same as `maximum_by(compare, List, Maximum)`.
+%  True if Maximum is the largest element of List, according to
+%  compare/3.  The same as `maximum_by(compare, List, Maximum)`.
 maximum(List, Maximum) :-
     maximum_by(compare, List, Maximum).
 
 
-%%	maximum_by(+Compare, ?List, ?Maximum) is semidet.
+%% maximum_by(+Compare, ?List, ?Maximum) is semidet.
 %
-%   True if Maximum is the largest element of List, according to
-%   Compare. Compare should be a predicate with the same signature as
-%   compare/3.
+%  True if Maximum is the largest element of List, according to
+%  Compare. Compare should be a predicate with the same signature as
+%  compare/3.
 %
-%   If List is not ground the constraint is delayed until List becomes
-%   ground.
+%  If List is not ground the constraint is delayed until List becomes
+%  ground.
 :- meta_predicate maximum_by(3,?,?).
 :- meta_predicate maximum_by(?,3,?,?).
 maximum_by(Compare, List, Minimum) :-
@@ -293,22 +293,22 @@ maximum_by([H|T], Compare, MinSoFar, Minimum) :-
     ).
 
 
-%%	minimum(?List, ?Minimum) is semidet.
+%% minimum(?List, ?Minimum) is semidet.
 %
-%   True if Minimum is the smallest element of List, according to
-%   compare/3.  The same as `minimum_by(compare, List, Minimum)`.
+%  True if Minimum is the smallest element of List, according to
+%  compare/3.  The same as `minimum_by(compare, List, Minimum)`.
 minimum(List, Minimum) :-
     minimum_by(compare, List, Minimum).
 
 
-%%	minimum_by(+Compare, ?List, ?Minimum) is semidet.
+%% minimum_by(+Compare, ?List, ?Minimum) is semidet.
 %
-%   True if Minimum is the smallest element of List, according to
-%   Compare. Compare should be a predicate with the same signature as
-%   compare/3.
+%  True if Minimum is the smallest element of List, according to
+%  Compare. Compare should be a predicate with the same signature as
+%  compare/3.
 %
-%   If List is not ground the constraint is delayed until List becomes
-%   ground.
+%  If List is not ground the constraint is delayed until List becomes
+%  ground.
 :- meta_predicate minimum_by(3,?,?).
 :- meta_predicate minimum_by(?,3,?,?).
 minimum_by(Compare, List, Minimum) :-
@@ -437,21 +437,21 @@ sort_with(Goal, List, Sorted) :-
     keysort(Pairs, SortedPairs),
     pairs_values(SortedPairs, Sorted).
 
-%%	sort_r(+List:list, -ReverseSorted:list) is det.
+%% sort_r(+List:list, -ReverseSorted:list) is det.
 %
-%	Like sort/2 but produces a list sorted in reverse order.
+%  Like sort/2 but produces a list sorted in reverse order.
 sort_r --> sort, reverse.
 
 
-%%	msort_r(+List:list, -ReverseSorted:list) is det.
+%% msort_r(+List:list, -ReverseSorted:list) is det.
 %
-%	Like msort/2 but produces a list sorted in reverse order.
+%  Like msort/2 but produces a list sorted in reverse order.
 msort_r --> msort, reverse.
 
 
-%%	keysort_r(+List:list, -ReverseSorted:list) is det.
+%% keysort_r(+List:list, -ReverseSorted:list) is det.
 %
-%	Like keysort/2 but produces a list sorted in reverse order.
+%  Like keysort/2 but produces a list sorted in reverse order.
 keysort_r --> keysort, reverse.
 
 
