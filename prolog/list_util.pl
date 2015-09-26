@@ -25,6 +25,7 @@
           , take_while/3
           , xfy_list/3
           ]).
+:- use_module(library(clpfd)).
 :- use_module(library(pairs), [group_pairs_by_key/2, map_list_to_pairs/3, pairs_values/2]).
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
@@ -274,21 +275,15 @@ span_([H|T0], Prefix, Suffix, Goal) :-
 %  Xs = [X, X, X] ;
 %  ... etc.
 %  ==
-replicate(N, X, Xs) :-
-    (  nonvar(N),
-       must_be(integer, N)
-    -> (  N >= 0
-       -> replicate(Xs, 0, N, X)
-       ;  replicate(Xs, 0, 0, X)
-       )
-    ;  replicate(Xs, 0, N, X)
-    ).
+replicate(N,X,Xs) :-
+    when(ground(N),must_be(nonneg,N)),    % set type assertions once
+    replicate_(Xs,X,N).
 
-replicate([], N, N, _).
-replicate([X|Xs], N0, N, X) :-
-    N0 \== N,
-    N1 is N0+1,
-    replicate(Xs, N1, N, X).
+replicate_([],_,0).
+replicate_([X|Xs],X,N) :-
+    N #> 0,
+    N0 #= N - 1,
+    replicate_(Xs,X,N0).
 
 
 %% oneof(List:list(T), Element:T) is semidet.
