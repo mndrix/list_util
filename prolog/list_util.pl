@@ -277,12 +277,14 @@ span_([H|T0], Prefix, Suffix, Goal) :-
 %  ==
 replicate(N,X,Xs) :-
     when(ground(N),must_be(nonneg,N)),    % set type assertions once
+    ( ground(N), N=0 -> Xs=[]; true ),    % avoid dangling choicepoint
     replicate_(Xs,X,N).
 
 replicate_([],_,0).
 replicate_([X|Xs],X,N) :-
     N #> 0,
     N0 #= N - 1,
+    ( ground(N0), N0=0 -> Xs=[]; true ), % avoid dangling choicepoint
     replicate_(Xs,X,N0).
 
 

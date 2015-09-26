@@ -16,7 +16,7 @@ generate_ok(N,Xs) :-
 :- use_module(library(tap)).
 
 forward :-
-    once(replicate(4, q, Xs)),
+    replicate(4, q, Xs),
     Xs == [q, q, q, q].
 
 
@@ -27,7 +27,7 @@ backward :-
 
 
 empty :-
-    once(replicate(0, ab, L)),
+    replicate(0, ab, L),
     L == [].
 
 
