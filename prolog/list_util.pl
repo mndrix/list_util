@@ -18,6 +18,7 @@
           , sort_r/2
           , sort_with/3
           , span/4
+          , replicate/3
           , split/3
           , split_at/4
           , take/3
@@ -243,6 +244,51 @@ span_([H|T0], Prefix, Suffix, Goal) :-
         Suffix = [H|T0]
     ).
 
+
+%% replicate(?N:nonneg, ?X:T, ?Xs:list(T))
+%
+%  True only if Xs is a list containing only the value X repeated N times. If N is
+%  less than zero, Xs is the empty list.
+%
+%  For example,
+%  ==
+%  ?- replicate(4, q, Xs).
+%  Xs = [q, q, q, q] ;
+%  false.
+%
+%  ?- replicate(N, X, [1,1]).
+%  N = 2,
+%  X = 1.
+%
+%  ?- replicate(0, ab, []).
+%  true.
+%
+%  ?- replicate(N, X, Xs).
+%  N = 0,
+%  Xs = [] ;
+%  N = 1,
+%  Xs = [X] ;
+%  N = 2,
+%  Xs = [X, X] ;
+%  N = 3,
+%  Xs = [X, X, X] ;
+%  ... etc.
+%  ==
+replicate(N, X, Xs) :-
+    (  nonvar(N),
+       must_be(integer, N)
+    -> (  N >= 0
+       -> replicate(Xs, 0, N, X)
+       ;  replicate(Xs, 0, 0, X)
+       )
+    ;  replicate(Xs, 0, N, X)
+    ).
+
+replicate([], N, N, _).
+replicate([X|Xs], N0, N, X) :-
+    N0 \== N,
+    N1 is N0+1,
+    replicate(Xs, N1, N, X).
 
 
 %% oneof(List:list(T), Element:T) is semidet.
