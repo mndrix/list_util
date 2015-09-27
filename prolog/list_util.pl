@@ -19,6 +19,7 @@
           , sort_with/3
           , span/4
           , replicate/3
+          , repeat/2
           , split/3
           , split_at/4
           , take/3
@@ -286,6 +287,34 @@ replicate_([X|Xs],X,N) :-
     N0 #= N - 1,
     ( ground(N0), N0=0 -> Xs=[]; true ), % avoid dangling choicepoint
     replicate_(Xs,X,N0).
+
+
+%% repeat(?X, -Xs)
+%
+%  True if Xs is an infinite lazy list that only contains occurences of X. If X
+%  is nonvar on entry, then all members of Xs will be constrained to be the same
+%  term.
+%  
+%  For example,
+%  ==
+%  ?- repeat(term(X), Rs), Rs = [term(2),term(2)|_].
+%  X = 2
+%  Rs = [term(2), term(2)|_G3041]
+%
+%  ?- repeat(X, Rs), take(4, Rs, Repeats).
+%  Rs = [X, X, X, X|_G3725],
+%  Repeats = [X, X, X, X]
+%
+%  ?- repeat(12, Rs), take(2, Rs, Repeats).
+%  Rs = [12, 12|_G3630],
+%  Repeats = [12, 12]
+%  ==
+repeat(X, Xs) :-
+    iterate(identity, id(X), Xs).
+
+% The state is wrapped in the id compound term to support lazy lists of both 
+% partial terms and nonvars.
+identity(id(X), id(X), X).
 
 
 %% oneof(List:list(T), Element:T) is semidet.
