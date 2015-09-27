@@ -311,11 +311,7 @@ replicate_([X|Xs],X,N) :-
 %  Repeats = [12, 12]
 %  ==
 repeat(X, Xs) :-
-    iterate(identity, id(X), Xs).
-
-% The state is wrapped in the id compound term to support lazy lists of both 
-% partial terms and nonvars.
-identity(id(X), id(X), X).
+  cycle([X], Xs).
 
 
 %% cycle(?Sequence, +Xs)
@@ -339,9 +335,7 @@ cycle(Sequence, Cycle) :-
 % The state is best described as a stack that pops X and updates the state of the
 % stack to Xs. If the state of the stack is empty, then the stack is reset to the
 % full stack.
-stack([]-[X|Xs], State0, X) :-
-    stack([X|Xs]-[X|Xs], State0, X).
-
+stack([]-[X|Xs], Xs-[X|Xs], X).
 stack([X|Xs]-Stack, Xs-Stack, X).
 
 
