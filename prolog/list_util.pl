@@ -20,6 +20,7 @@
           , span/4
           , replicate/3
           , repeat/2
+          , cycle/2
           , split/3
           , split_at/4
           , take/3
@@ -315,6 +316,33 @@ repeat(X, Xs) :-
 % The state is wrapped in the id compound term to support lazy lists of both 
 % partial terms and nonvars.
 identity(id(X), id(X), X).
+
+
+%% cycle(?Sequence, +Xs)
+%  True if Xs is an infinite lazy list that contains Sequence, repeated cyclically
+%
+%  For example,
+%  ==
+%  ?- cycle([a,2,z], Xs), take(5, Xs, Cycle).
+%  Xs = [a, 2, z, a, 2|_G3765],
+%  Cycle = [a, 2, z, a, 2]
+%
+%  ?- dif(X,Y), cycle([X,Y], Xs), take(3, Xs, Cycle), X = 1, Y = 12.
+%  X = 1,
+%  Y = 12,
+%  Xs = [1, 12, 1|_G3992],
+%  Cycle = [1, 12, 1]
+%  ==
+cycle(Sequence, Cycle) :-
+    iterate(stack, Sequence-Sequence, Cycle).
+
+% The state is best described as a stack that pops X and updates the state of the
+% stack to Xs. If the state of the stack is empty, then the stack is reset to the
+% full stack.
+stack([]-[X|Xs], State0, X) :-
+    stack([X|Xs]-[X|Xs], State0, X).
+
+stack([X|Xs]-Stack, Xs-Stack, X).
 
 
 %% oneof(List:list(T), Element:T) is semidet.
