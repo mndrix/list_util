@@ -307,6 +307,7 @@ repeat(X, Xs) :-
 
 
 %% cycle(?Sequence, +Xs)
+%
 %  True if Xs is an infinite lazy list that contains Sequence, repeated cyclically
 %
 %  For example,
