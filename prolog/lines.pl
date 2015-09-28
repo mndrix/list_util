@@ -66,7 +66,7 @@ nb_list_empty(NbList) :-
 % access the head and tail of our nb_list
 nb_list_head_tail(nb_list(_,H,T), Head, Tail) :-
     % do we already know the head value?
-    string(H),
+    H \= unknown,
     !,
     Head = H,
     Tail = T.
