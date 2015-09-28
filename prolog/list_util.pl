@@ -303,7 +303,7 @@ replicate(N,X,Xs) :-
 %  Repeats = [12, 12]
 %  ==
 repeat(X, Xs) :-
-  cycle([X], Xs).
+    cycle([X], Xs).
 
 
 %% cycle(?Sequence, +Xs)
