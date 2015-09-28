@@ -29,3 +29,10 @@ unbound_take :-
 
 empty :-
     cycle([],[]).
+
+% I wish this test could pass.  Unfortunately, iterate/3 cuts choicepoints in
+% its goal.  That prevents cycle/2 from backtracking to solve for Sequence.
+% If there's a clean way to make it work, that'd be great to do someday.
+sequence_detection(todo) :-
+    cycle(Sequence,[a,b,c,a,b,c]),
+    Sequence == [a,b,c].
