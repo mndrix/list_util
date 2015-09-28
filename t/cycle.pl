@@ -26,3 +26,6 @@ unbound_take :-
     maplist(var, [A,B]),
     term_variables(Xs, [A,B,_]),
     Take == [A,B,A,A].
+
+empty :-
+    cycle([],[]).
