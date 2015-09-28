@@ -38,14 +38,15 @@ unbound_l_take_small :-
   maplist(var, Take).
 
 unbound_l_take_empty :-
-  forall(split_at(5, L, Take, []),
+  forall(
+    split_at(5, L, Take, []),
     (  length(L, N),
        N =< 5,
        term_variables(L, Vs),
-       length(Vs, N)
+       length(Vs, N),
+       L == Take
     )
-  ),
-  L = Take.
+  ).
 
 zero_unbound_l_take :-
   split_at(0, L, Take, [a,b]),
