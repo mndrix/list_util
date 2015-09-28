@@ -287,7 +287,7 @@ replicate(N,X,Xs) :-
 %  True if Xs is an infinite lazy list that only contains occurences of X. If X
 %  is nonvar on entry, then all members of Xs will be constrained to be the same
 %  term.
-%  
+%
 %  For example,
 %  ==
 %  ?- repeat(term(X), Rs), Rs = [term(2),term(2)|_].
