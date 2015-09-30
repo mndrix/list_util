@@ -14,32 +14,32 @@ lines(file(File), Lines) :-
     open(File, read, Stream),
     lines(stream(Stream), Lines).
 lines(stream(Stream), Lines) :-
-    stream_to_llist(line_stream(Stream),Lines).
+    flow_to_llist(line_flow(Stream),Lines).
 
 
-stream_to_llist(Stream,List) :-
-    NbList = nblist(Stream, unknown, unknown),
-    freeze(List, stream_to_llist_(List, NbList)).
+flow_to_llist(Flow,List) :-
+    NbList = nblist(Flow, unknown, unknown),
+    freeze(List, flow_to_llist_(List, NbList)).
 
-stream_to_llist_([], NbList) :-
+flow_to_llist_([], NbList) :-
     nblist_empty(NbList),
     !.
-stream_to_llist_([H|T], NbList0) :-
+flow_to_llist_([H|T], NbList0) :-
     nblist_head_tail(NbList0, Head, NbList),
     H = Head,
     ( nblist_empty(NbList) -> % terminate list as soon as possible
         T = []
     ; true -> % more content available, fetch it on demand
-        freeze(T, stream_to_llist_(T, NbList))
+        freeze(T, flow_to_llist_(T, NbList))
     ).
 
 
-at_eof(line_stream(IoStream)) :-
-    at_end_of_stream(IoStream).
+at_eof(line_flow(Stream)) :-
+    at_end_of_stream(Stream).
 
 
-next(line_stream(IoStream),Line) :-
-    read_line_to_string(IoStream,Line).
+next(line_flow(Stream),Line) :-
+    read_line_to_string(Stream,Line).
 
 
 % We want lines/2 to work on all streams, even if they can't be
@@ -69,8 +69,8 @@ next(line_stream(IoStream),Line) :-
 nblist_empty(nblist(_,end_of_file,_)) :-
     !.
 nblist_empty(NbList) :-
-    NbList = nblist(Stream, _, _),  % don't unify in head, because nb_setarg/3
-    at_eof(Stream),
+    NbList = nblist(Flow, _, _),  % don't unify in head, because nb_setarg/3
+    at_eof(Flow),
     nb_setarg(2,NbList,end_of_file).
 
 
@@ -83,11 +83,10 @@ nblist_head_tail(nblist(_,H,T), Head, Tail) :-
     Tail = T.
 nblist_head_tail(NbList, Head, Tail) :-
     % don't know the head value, read it from the stream
-    NbList = nblist(Stream, unknown, _),  % don't unify in head, because nb_setarg/3
-    %debug(list_util, "lines/2: reading a line from ~w", [Stream]),
-    next(Stream,H),
+    NbList = nblist(Flow, unknown, _),  % don't unify in head, because nb_setarg/3
+    next(Flow,H),
     nb_setarg(2, NbList, known(H)),
-    nb_setarg(3, NbList, nblist(Stream,unknown,unknown)),
+    nb_setarg(3, NbList, nblist(Flow,unknown,unknown)),
 
     % now that side effects are done we can unify
     Head = H,
