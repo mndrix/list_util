@@ -50,9 +50,8 @@ lines_([H|T], NbList0) :-
 
 % :- type nb_list ---> nb_list(stream, atomic, nb_list).
 %
-% The second, atomic argument can be `unknown` or `end_of_file` or a
-% string containing the content we care about.  We can't use variables
-% because nb_setarg/3.
+% The second, atomic argument can be `known(Val)`, `unknown` or `end_of_file`.
+% We can't use variables because nb_setarg/3.
 
 % is our nb_list empty?
 nb_list_empty(nb_list(_,end_of_file,_)) :-
@@ -66,16 +65,16 @@ nb_list_empty(NbList) :-
 % access the head and tail of our nb_list
 nb_list_head_tail(nb_list(_,H,T), Head, Tail) :-
     % do we already know the head value?
-    H \= unknown,
+    H=known(V),
     !,
-    Head = H,
+    Head = V,
     Tail = T.
 nb_list_head_tail(NbList, Head, Tail) :-
     % don't know the head value, read it from the stream
     NbList = nb_list(Stream, unknown, _),  % don't unify in head, because nb_setarg/3
     %debug(list_util, "lines/2: reading a line from ~w", [Stream]),
     read_line_to_string(Stream, H),
-    nb_setarg(2, NbList, H),
+    nb_setarg(2, NbList, known(H)),
     nb_setarg(3, NbList, nb_list(Stream,unknown,unknown)),
 
     % now that side effects are done we can unify
