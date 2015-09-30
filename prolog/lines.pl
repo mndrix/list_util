@@ -14,16 +14,16 @@ lines(file(File), Lines) :-
     open(File, read, Stream),
     lines(stream(Stream), Lines).
 lines(stream(Stream), Lines) :-
-    NbList = nb_list(line_stream(Stream), unknown, unknown),
+    NbList = nblist(line_stream(Stream), unknown, unknown),
     freeze(Lines, lines_(Lines, NbList)).
 
 lines_([], NbList) :-
-    nb_list_empty(NbList),
+    nblist_empty(NbList),
     !.
 lines_([H|T], NbList0) :-
-    nb_list_head_tail(NbList0, Head, NbList),
+    nblist_head_tail(NbList0, Head, NbList),
     H = Head,
-    ( nb_list_empty(NbList) -> % terminate list as soon as possible
+    ( nblist_empty(NbList) -> % terminate list as soon as possible
         T = []
     ; true -> % more content available, fetch it on demand
         freeze(T, lines_(T, NbList))
@@ -56,35 +56,35 @@ next(line_stream(IoStream),Line) :-
 % about twice as fast (2s vs 4s) as the old one because it doesn't spend
 % time calling set_stream_position/2.
 
-% :- type nb_list ---> nb_list(stream, atomic, nb_list).
+% :- type nblist ---> nblist(stream, atomic, nblist).
 %
 % The second, atomic argument can be `known(Val)`, `unknown` or `end_of_file`.
 % We can't use variables because nb_setarg/3.
 
-% is our nb_list empty?
-nb_list_empty(nb_list(_,end_of_file,_)) :-
+% is our nblist empty?
+nblist_empty(nblist(_,end_of_file,_)) :-
     !.
-nb_list_empty(NbList) :-
-    NbList = nb_list(Stream, _, _),  % don't unify in head, because nb_setarg/3
+nblist_empty(NbList) :-
+    NbList = nblist(Stream, _, _),  % don't unify in head, because nb_setarg/3
     at_eof(Stream),
     nb_setarg(2,NbList,end_of_file).
 
 
-% access the head and tail of our nb_list
-nb_list_head_tail(nb_list(_,H,T), Head, Tail) :-
+% access the head and tail of our nblist
+nblist_head_tail(nblist(_,H,T), Head, Tail) :-
     % do we already know the head value?
     H=known(V),
     !,
     Head = V,
     Tail = T.
-nb_list_head_tail(NbList, Head, Tail) :-
+nblist_head_tail(NbList, Head, Tail) :-
     % don't know the head value, read it from the stream
-    NbList = nb_list(Stream, unknown, _),  % don't unify in head, because nb_setarg/3
+    NbList = nblist(Stream, unknown, _),  % don't unify in head, because nb_setarg/3
     %debug(list_util, "lines/2: reading a line from ~w", [Stream]),
     next(Stream,H),
     nb_setarg(2, NbList, known(H)),
-    nb_setarg(3, NbList, nb_list(Stream,unknown,unknown)),
+    nb_setarg(3, NbList, nblist(Stream,unknown,unknown)),
 
     % now that side effects are done we can unify
     Head = H,
-    nb_list(_,_,Tail) = NbList.
+    nblist(_,_,Tail) = NbList.
