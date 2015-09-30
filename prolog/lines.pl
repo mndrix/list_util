@@ -14,19 +14,23 @@ lines(file(File), Lines) :-
     open(File, read, Stream),
     lines(stream(Stream), Lines).
 lines(stream(Stream), Lines) :-
-    NbList = nblist(line_stream(Stream), unknown, unknown),
-    freeze(Lines, lines_(Lines, NbList)).
+    stream_to_llist(line_stream(Stream),Lines).
 
-lines_([], NbList) :-
+
+stream_to_llist(Stream,List) :-
+    NbList = nblist(Stream, unknown, unknown),
+    freeze(List, stream_to_llist_(List, NbList)).
+
+stream_to_llist_([], NbList) :-
     nblist_empty(NbList),
     !.
-lines_([H|T], NbList0) :-
+stream_to_llist_([H|T], NbList0) :-
     nblist_head_tail(NbList0, Head, NbList),
     H = Head,
     ( nblist_empty(NbList) -> % terminate list as soon as possible
         T = []
     ; true -> % more content available, fetch it on demand
-        freeze(T, lines_(T, NbList))
+        freeze(T, stream_to_llist_(T, NbList))
     ).
 
 
