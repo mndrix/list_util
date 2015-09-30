@@ -14,7 +14,7 @@ lines(file(File), Lines) :-
     open(File, read, Stream),
     lines(stream(Stream), Lines).
 lines(stream(Stream), Lines) :-
-    NbList = nb_list(Stream, unknown, unknown),
+    NbList = nb_list(line_stream(Stream), unknown, unknown),
     freeze(Lines, lines_(Lines, NbList)).
 
 lines_([], NbList) :-
@@ -28,6 +28,14 @@ lines_([H|T], NbList0) :-
     ; true -> % more content available, fetch it on demand
         freeze(T, lines_(T, NbList))
     ).
+
+
+at_eof(line_stream(IoStream)) :-
+    at_end_of_stream(IoStream).
+
+
+next(line_stream(IoStream),Line) :-
+    read_line_to_string(IoStream,Line).
 
 
 % We want lines/2 to work on all streams, even if they can't be
@@ -58,7 +66,7 @@ nb_list_empty(nb_list(_,end_of_file,_)) :-
     !.
 nb_list_empty(NbList) :-
     NbList = nb_list(Stream, _, _),  % don't unify in head, because nb_setarg/3
-    at_end_of_stream(Stream),
+    at_eof(Stream),
     nb_setarg(2,NbList,end_of_file).
 
 
@@ -73,7 +81,7 @@ nb_list_head_tail(NbList, Head, Tail) :-
     % don't know the head value, read it from the stream
     NbList = nb_list(Stream, unknown, _),  % don't unify in head, because nb_setarg/3
     %debug(list_util, "lines/2: reading a line from ~w", [Stream]),
-    read_line_to_string(Stream, H),
+    next(Stream,H),
     nb_setarg(2, NbList, known(H)),
     nb_setarg(3, NbList, nb_list(Stream,unknown,unknown)),
 
