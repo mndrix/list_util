@@ -34,10 +34,20 @@ flow_to_llist_([H|T], NbList0) :-
     ).
 
 
+%% at_eof(+Flow) is semidet.
+%
+%  True if Flow can provide no more values.  eof = "end of flow"
 at_eof(line_flow(Stream)) :-
     at_end_of_stream(Stream).
 
 
+%% next(+Flow,-X) is semidet.
+%
+%  True if X is the next value from Flow.  Fails if Flow can
+%  provide no more values.  next/2 should only fail if it's
+%  impossible to determine whether more values are available until
+%  trying to fetch them.  Otherwise, it's more efficienct for at_eof/1
+%  to just succeed in the first place.
 next(line_flow(Stream),Line) :-
     read_line_to_string(Stream,Line).
 
