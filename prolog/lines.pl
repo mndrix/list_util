@@ -37,6 +37,9 @@ flow_to_llist_([H|T], NbList0) :-
 %% at_eof(+Flow) is semidet.
 %
 %  True if Flow can provide no more values.  eof = "end of flow"
+at_eof(lazy_findall(Thread,_ResponseQ)) :-
+    % flow is finished if worker thread is gone
+    \+ thread_exists(Thread).
 at_eof(line_flow(Stream)) :-
     at_end_of_stream(Stream).
 
@@ -48,8 +51,28 @@ at_eof(line_flow(Stream)) :-
 %  impossible to determine whether more values are available until
 %  trying to fetch them.  Otherwise, it's more efficienct for at_eof/1
 %  to just succeed in the first place.
+next(lazy_findall(Thread,ResponseQ),Solution) :-
+    thread_send_message(Thread,send_another_solution),
+    thread_get_message(ResponseQ,Response),
+    ( Response=found_final_solution ->
+        % final solution is waiting. join worker thread to receive it
+        thread_join(Thread,exited(MaybeSolution)),
+        ( MaybeSolution=just(Solution) ->
+            true
+        ; MaybeSolution=nothing ->
+            fail  % final solution was a spurious choicepoint
+        ; MaybeSolution=exception(E) ->
+            throw(E)
+        )
+    ; Response=solution(Solution) ->
+        true
+    ).
 next(line_flow(Stream),Line) :-
     read_line_to_string(Stream,Line).
+
+
+thread_exists(Thread) :-
+    catch(thread_property(Thread,status(_)), _, fail).
 
 
 % We want lines/2 to work on all streams, even if they can't be

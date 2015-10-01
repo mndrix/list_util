@@ -4,6 +4,7 @@
           , group_with/3
           , iterate/3
           , keysort_r/2
+          , lazy_findall/3
           , lazy_include/3
           , lines/2
           , map_include/3
@@ -478,6 +479,58 @@ positive_integers(List) :-
 
 positive_integers_(A,B,A) :-
     succ(A,B).
+
+
+%% lazy_findall(:Template,+Goal,-List) is det.
+%
+%  Like findall/3 but List is constructed lazily so it can be used with
+%  long or infinite solutions of Goal.
+:- meta_predicate lazy_findall(?,0,?), lazy_findall_search(+,?,0).
+lazy_findall(Template,Goal,List) :-
+    gensym(lazy_findall_,ThreadAlias),  % see Note_findall_alias
+    message_queue_create(ResponseQ,[max_size(1)]),
+    thread_create(
+        lazy_findall_search(ResponseQ,Template,Goal),
+        _ThreadId,
+        [alias(ThreadAlias)]
+    ),
+    flow_to_llist(lazy_findall(ThreadAlias,ResponseQ),List).
+
+lazy_findall_search(ResponseQ,Template,Goal) :-
+    thread_get_message(send_another_solution),
+    setup_call_catcher_cleanup(true,Goal,Catcher,true),
+    ( var(Catcher) -> % Goal has unexplored choicepoints
+        thread_send_message(ResponseQ,solution(Template)),
+        thread_get_message(send_another_solution),
+        fail % explore other choicepoints
+    ; (Catcher=exit; Catcher=(!)) -> % Goal found final solution
+        lazy_findall_final(ResponseQ,just(Template))
+    ; Catcher=fail -> % Goal failed
+        lazy_findall_final(ResponseQ,nothing)
+    ; (Catcher=exception(E); Catcher=external_exception(E)) ->
+        lazy_findall_final(ResponseQ,exception(E))
+    ).
+
+lazy_findall_final(ResponseQ,Solution) :-
+    thread_send_message(ResponseQ,found_final_solution),
+    thread_exit(Solution).
+
+/*
+Note_findall_alias:
+
+To implement flow:at_eof/1 we must be able to recognize when a thread no longer
+exists. SWI-Prolog's default thread IDs are reused after a thread's resources
+are garbage collected. If we used the default thread IDs, we might encounter the
+following scenario:
+
+  1. we start lazy_findall/3
+  2. our worker thread exits
+  3. another thread starts
+  4. at_eof/1 thinks the worker thread still exists
+
+By using gensym/2 and a thread alias, we can be certain that our thread ID is
+never reused.
+*/
 
 %% lazy_include(+Goal, +List1, -List2) is det.
 %
