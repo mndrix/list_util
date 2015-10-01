@@ -504,7 +504,7 @@ lazy_include_([H|T], Goal, Lazy) :-
 %  element of List1. This is a lazy version of maplist/3.
 :- meta_predicate lazy_maplist(2, ?, ?).
 lazy_maplist(Goal, Xs, Ys) :-
-    freeze(Ys, lazy_maplist_(Xs, Ys, Goal)).
+    freeze(Ys, freeze(Xs, lazy_maplist_(Xs, Ys, Goal))).
 
 lazy_maplist_([], [], _).
 lazy_maplist_([X|Xs], [Y|Ys], Goal) :-
