@@ -1,10 +1,12 @@
 :- module(list_util,
-          [ drop/3
+          [ cycle/2
+          , drop/3
           , drop_while/3
           , group_with/3
           , iterate/3
           , keysort_r/2
           , lazy_include/3
+          , lazy_maplist/3
           , lines/2
           , map_include/3
           , maximum/2
@@ -14,13 +16,12 @@
           , msort_r/2
           , oneof/2
           , positive_integers/1
+          , repeat/2
+          , replicate/3
           , sort_by/3
           , sort_r/2
           , sort_with/3
           , span/4
-          , replicate/3
-          , repeat/2
-          , cycle/2
           , split/3
           , split_at/4
           , take/3
@@ -308,7 +309,7 @@ repeat(X, Xs) :-
 
 %% cycle(?Sequence, +Xs)
 %
-%  True if Xs is an infinite lazy list that contains Sequence, repeated cyclically
+%  True if Xs is an infinite lazy list that contains Sequence, repeated cyclically.
 %
 %  For example,
 %  ==
@@ -495,6 +496,20 @@ lazy_include_([H|T], Goal, Lazy) :-
     ; % exclude this element ->
         lazy_include_(T, Goal, Lazy)
     ).
+
+
+%% lazy_maplist(:Goal, +List1, -List2)
+%
+%  True if List2 is a list of elements that all satisfy Goal applied to each
+%  element of List1. This is a lazy version of maplist/3.
+:- meta_predicate lazy_maplist(2, ?, ?).
+lazy_maplist(Goal, Xs, Ys) :-
+    freeze(Ys, lazy_maplist_(Xs, Ys, Goal)).
+
+lazy_maplist_([], [], _).
+lazy_maplist_([X|Xs], [Y|Ys], Goal) :-
+    call(Goal, X, Y),
+    lazy_maplist(Goal, Xs, Ys).
 
 
 %% group_with(:Goal, +List:list, -Grouped:list(list)) is det.
