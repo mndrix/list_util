@@ -84,10 +84,14 @@ nblist_head_tail(nblist(_,H,T), Head, Tail) :-
 nblist_head_tail(NbList, Head, Tail) :-
     % don't know the head value, read it from the stream
     NbList = nblist(Flow, unknown, _),  % don't unify in head, because nb_setarg/3
-    next(Flow,H),
-    nb_setarg(2, NbList, known(H)),
-    nb_setarg(3, NbList, nblist(Flow,unknown,unknown)),
+    ( next(Flow,H) ->
+        nb_setarg(2, NbList, known(H)),
+        nb_setarg(3, NbList, nblist(Flow,unknown,unknown)),
 
-    % now that side effects are done we can unify
-    Head = H,
-    nblist(_,_,Tail) = NbList.
+        % now that side effects are done we can unify
+        Head = H,
+        nblist(_,_,Tail) = NbList
+    ; otherwise ->
+        nb_setarg(2,NbList,end_of_file),
+        fail
+    ).
