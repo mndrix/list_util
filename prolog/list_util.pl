@@ -5,6 +5,7 @@
           , group_with/3
           , iterate/3
           , keysort_r/2
+          , lazy_findall/3
           , lazy_include/3
           , lazy_maplist/3
           , lines/2
@@ -34,6 +35,7 @@
 :- use_module(library(when), [when/2]).
 
 :- include(nblist).
+:- include(lazy_findall).
 :- include(lines).
 
 % TODO look through list library of Amzi! Prolog for ideas: http://www.amzi.com/manuals/amzi/libs/list.htm
@@ -480,6 +482,7 @@ positive_integers(List) :-
 
 positive_integers_(A,B,A) :-
     succ(A,B).
+
 
 %% lazy_include(+Goal, +List1:list, -List2:list) is det.
 %
