@@ -130,7 +130,7 @@ split_at_([], N, [], []) :-
 split_at_([X|Xs], N, [X|Take], Rest) :-
     N > 0,
     succ(N0, N),
-    split_at(N0, Xs, Take, Rest).
+    split_at_(Xs, N0, Take, Rest).
 
 
 %% take_while(:Goal, +List1, -List2) is det.
