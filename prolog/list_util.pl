@@ -498,7 +498,7 @@ lazy_include_([H|T], Goal, Lazy) :-
     ).
 
 
-%% lazy_maplist(:Goal, +List1, -List2)
+%% lazy_maplist(:Goal, ?List1, ?List2)
 %
 %  True if List2 is a list of elements that all satisfy Goal applied to each
 %  element of List1. This is a lazy version of maplist/3.
