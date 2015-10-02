@@ -133,7 +133,7 @@ split_at_([X|Xs], N, [X|Take], Rest) :-
     split_at_(Xs, N0, Take, Rest).
 
 
-%% take_while(:Goal, +List1, -List2) is det.
+%% take_while(:Goal, +List1:list, -List2:list) is det.
 %
 %  True if List2 is the longest prefix of List1 for which Goal succeeds.
 %  For example,
@@ -198,7 +198,7 @@ drop_([_|T], N1, Rest) :-
     drop_(T, N0, Rest).
 
 
-%% drop_while(:Goal, +List1, -List2) is det.
+%% drop_while(:Goal, +List1:list, -List2:list) is det.
 %
 %  True if List2 is the suffix remaining after
 %  =|take_while(Goal,List1,_)|=.  For example,
@@ -214,7 +214,7 @@ drop_while(Goal, List, Suffix) :-
     span(Goal,List,_,Suffix).
 
 
-%% span(:Goal, +List, -Prefix, -Suffix) is det.
+%% span(:Goal, +List:list, -Prefix:list, -Suffix:list) is det.
 %
 %  True if Prefix is the longest prefix of List for which Goal
 %  succeeds and Suffix is the rest. For any Goal, it is true that
@@ -283,7 +283,7 @@ replicate(N,X,Xs) :-
     maplist(=(X),Xs).
 
 
-%% repeat(?X, -Xs)
+%% repeat(?X, -Xs:list)
 %
 %  True if Xs is an infinite lazy list that only contains occurences of X. If X
 %  is nonvar on entry, then all members of Xs will be constrained to be the same
@@ -307,7 +307,7 @@ repeat(X, Xs) :-
     cycle([X], Xs).
 
 
-%% cycle(?Sequence, +Xs)
+%% cycle(?Sequence, +Xs:list)
 %
 %  True if Xs is an infinite lazy list that contains Sequence, repeated cyclically.
 %
@@ -371,7 +371,7 @@ map_include_([H0|T0], List, F) :-
 % TODO implement map_include/5
 
 
-%% maximum(?List, ?Maximum) is semidet.
+%% maximum(?List:list, ?Maximum) is semidet.
 %
 %  True if Maximum is the largest element of List, according to
 %  compare/3.  The same as `maximum_by(compare, List, Maximum)`.
@@ -379,7 +379,7 @@ maximum(List, Maximum) :-
     maximum_by(compare, List, Maximum).
 
 
-%% maximum_by(+Compare, ?List, ?Maximum) is semidet.
+%% maximum_by(+Compare, ?List:list, ?Maximum) is semidet.
 %
 %  True if Maximum is the largest element of List, according to
 %  Compare. Compare should be a predicate with the same signature as
@@ -405,7 +405,7 @@ maximum_by([H|T], Compare, MinSoFar, Minimum) :-
     ).
 
 
-%% minimum(?List, ?Minimum) is semidet.
+%% minimum(?List:list, ?Minimum) is semidet.
 %
 %  True if Minimum is the smallest element of List, according to
 %  compare/3.  The same as `minimum_by(compare, List, Minimum)`.
@@ -413,7 +413,7 @@ minimum(List, Minimum) :-
     minimum_by(compare, List, Minimum).
 
 
-%% minimum_by(+Compare, ?List, ?Minimum) is semidet.
+%% minimum_by(+Compare, ?List:list, ?Minimum) is semidet.
 %
 %  True if Minimum is the smallest element of List, according to
 %  Compare. Compare should be a predicate with the same signature as
@@ -439,7 +439,7 @@ minimum_by([H|T], Compare, MinSoFar, Minimum) :-
     ).
 
 
-%% iterate(:Goal, +State, -List)
+%% iterate(:Goal, +State, -List:list)
 %
 %  List is a lazy (possibly infinite) list whose elements are
 %  the result of repeatedly applying Goal to State. Goal may fail to end
@@ -480,7 +480,7 @@ positive_integers(List) :-
 positive_integers_(A,B,A) :-
     succ(A,B).
 
-%% lazy_include(+Goal, +List1, -List2) is det.
+%% lazy_include(+Goal, +List1:list, -List2:list) is det.
 %
 %  Like include/3 but produces List2 lazily. This predicate is helpful
 %  when List1 is infinite or very large.
@@ -498,7 +498,7 @@ lazy_include_([H|T], Goal, Lazy) :-
     ).
 
 
-%% lazy_maplist(:Goal, ?List1, ?List2)
+%% lazy_maplist(:Goal, ?List1:list, ?List2:list)
 %
 %  True if List2 is a list of elements that all satisfy Goal applied to each
 %  element of List1. This is a lazy version of maplist/3.
