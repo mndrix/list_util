@@ -1,3 +1,9 @@
+# v0.9.0 (2015-10-02)
+
+  * Add lazy_maplist/3
+  * Add lazy_findall/3
+  * Performance improvement for split_at/4
+
 # v0.8.0 (2015-09-28)
 
   * Add replicate/3
