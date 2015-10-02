@@ -33,6 +33,7 @@
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
 
+:- include(nblist).
 :- include(lines).
 
 % TODO look through list library of Amzi! Prolog for ideas: http://www.amzi.com/manuals/amzi/libs/list.htm
