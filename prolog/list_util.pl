@@ -376,7 +376,6 @@ map_include_([H0|T0], List, F) :-
 %% map_include(:Goal:callable, +In0:list, +In1:list, -Out:list) is det.
 %
 %  Same as map_include/3, except Goal is binary argument meta predicate.
-%  ==
 :- meta_predicate map_include(3, +, +, -).
 :- meta_predicate map_include_(+, +, -, 3).
 map_include(F, L0, L1, L) :-
@@ -393,9 +392,8 @@ map_include_([H0|T0], [H1|T1], List, F) :-
 %% map_include(:Goal:callable, +In0:list, +In1:list, +In2:list, -Out:list) is det.
 %
 %  Same as map_include/3, except Goal is tertiary argument meta predicate.
-%  ==
 :- meta_predicate map_include(4, +, +, +, -).
-:- meta_predicate map_include_(+, +, +, +, -, 4).
+:- meta_predicate map_include_(+, +, +, -, 4).
 map_include(F, L0, L1, L2, L) :-
     map_include_(L0, L1, L2, L, F).
 
