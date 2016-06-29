@@ -434,19 +434,19 @@ maximum_with(Project, List, Maximum) :-
 %  ground.
 :- meta_predicate maximum_by(3,?,?).
 :- meta_predicate maximum_by(?,3,?,?).
-maximum_by(Compare, List, Minimum) :-
+maximum_by(Compare, List, Maximum) :-
     \+ ground(List),
     !,
-    when(ground(List), maximum_by(Compare,List,Minimum)).
-maximum_by(Compare,[H|T],Minimum) :-
-    maximum_by(T, Compare, H, Minimum).
-maximum_by([], _, Minimum, Minimum).
-maximum_by([H|T], Compare, MinSoFar, Minimum) :-
-    call(Compare, Order, H, MinSoFar),
+    when(ground(List), maximum_by(Compare,List,Maximum)).
+maximum_by(Compare,[H|T],Maximum) :-
+    maximum_by(T, Compare, H, Maximum).
+maximum_by([], _, Maximum, Maximum).
+maximum_by([H|T], Compare, MaxSoFar, Maximum) :-
+    call(Compare, Order, H, MaxSoFar),
     ( Order = (>) ->
-        maximum_by(T, Compare, H, Minimum)
+        maximum_by(T, Compare, H, Maximum)
     ; % otherwise ->
-        maximum_by(T, Compare, MinSoFar, Minimum)
+        maximum_by(T, Compare, MaxSoFar, Maximum)
     ).
 
 
