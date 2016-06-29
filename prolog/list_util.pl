@@ -415,10 +415,10 @@ map_include_([H0|T0], [H1|T1], [H2|T2], List, F) :-
 maximum(List, Maximum) :-
     maximum_by(compare, List, Maximum).
 
-%% maximum_with(?List:list, ?Maximum) is semidet.
+%% maximum_with(:Goal, ?List:list, ?Maximum) is semidet.
 %
-%  True if Maximum is the largest projected value (according to compare/3) of each
-%  element in the list. The projected values are found by applying some projection goal `Project`,
+%  True if Maximum is the largest projected value (according to compare/3) of
+%  each element in the list. The projected values are found by applying `Goal`
 %  to each list element.
 maximum_with(Project, List, Maximum) :-
     map_list_to_pairs(Project, List, Pairs),
@@ -457,10 +457,11 @@ maximum_by([H|T], Compare, MaxSoFar, Maximum) :-
 minimum(List, Minimum) :-
     minimum_by(compare, List, Minimum).
 
-%% minimum_with(?List:list, ?Minimum) is semidet.
+
+%% minimum_with(:Goal, ?List:list, ?Minimum) is semidet.
 %
-%  True if Minimum is the smallest projected value (according to compare/3) of each
-%  element in the list. The projected values are found by applying some projection goal `Project`,
+%  True if Minimum is the largest projected value (according to compare/3) of
+%  each element in the list. The projected values are found by applying `Goal`
 %  to each list element.
 minimum_with(Project, List, Minimum) :-
     map_list_to_pairs(Project, List, Pairs),
