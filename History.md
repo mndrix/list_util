@@ -1,3 +1,10 @@
+# v0.10.0 (2016-06-29)
+
+  * Add minimum_with/3 and maximum_with/3
+  * Add map_include/4 and map_include/5
+  * Add tests for call_ended/2
+  * Documentation and variable naming fixes
+
 # v0.9.0 (2015-10-02)
 
   * Add lazy_maplist/3
