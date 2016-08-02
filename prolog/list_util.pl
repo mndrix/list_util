@@ -2,6 +2,7 @@
           [ cycle/2
           , drop/3
           , drop_while/3
+          , group_by/3
           , group_with/3
           , iterate/3
           , keysort_r/2
@@ -586,6 +587,42 @@ group_with(Goal,List,Groups) :-
     group_pairs_by_key(Sorted, KeyedGroups),
     pairs_values(KeyedGroups, Groups).
 
+%% group_by(:Goal, +List:list, -Groups:list(list)) is det.
+%
+%  Groups elements of List using a custom Goal predicate to test for equality.
+%  Goal compares elements by taking the form
+%  =|call(Goal, Order, X, Y)|=
+%
+%  Elements of List will be grouped together if and only if the comparison Order
+%  is (=)
+%
+%  For example,
+%  ==
+%  ?- group_by(compare, `Mississippi`, Gs),
+%  maplist([Codes,String]>>string_codes(String,Codes), Gs, Groups).
+%
+%  Groups = ["M", "iiii", "ssss", "pp"].
+%  ==
+:- meta_predicate group_by(3, +, -).
+group_by(Goal, List, Groups) :-
+    (  nonvar(List)
+    -> group_by_(List, Goal, Groups)
+    ;  instantiation_error(List)
+    ).
+
+group_by_([], _, []).
+group_by_([X|Xs], Goal, [Group|Groups]) :-
+    group_([X|Xs], Goal, X, Group, NewList),
+    group_by_(NewList, Goal, Groups).
+
+group_([], _, _, [], []).
+group_([Y|Ys], Goal, X, Group, NewList) :-
+    (  call(Goal, (=), X, Y)
+    -> group_(Ys, Goal, X, Group0, NewList),
+       Group = [Y|Group0]
+    ;  group_(Ys, Goal, X, Group, NewList0),
+       NewList = [Y|NewList0]
+    ).
 
 %% sort_by(:Goal, +List:list, -Sorted:list) is det.
 %
