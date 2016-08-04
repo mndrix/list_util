@@ -2,6 +2,7 @@
           [ cycle/2
           , drop/3
           , drop_while/3
+          , group/2
           , group_by/3
           , group_with/3
           , iterate/3
@@ -587,42 +588,49 @@ group_with(Goal,List,Groups) :-
     group_pairs_by_key(Sorted, KeyedGroups),
     pairs_values(KeyedGroups, Groups).
 
-%% group_by(:Goal, +List:list, -Groups:list(list)) is det.
+%% group_by(:Goal, +List:list, -Groups:list(list)) is semidet.
 %
 %  Groups elements of List using a custom Goal predicate to test for equality.
-%  Goal compares elements by taking the form
-%  =|call(Goal, Order, X, Y)|=
+%  If Goal is true, then two elements compare as equal.
+%  Goal takes the form
 %
-%  Elements of List will be grouped together if and only if the comparison Order
-%  is (=)
+%  =|call(Goal, X, Y)|=
+%
+%  Adjacent and equal elements of List will be grouped together if and only if Goal is true
 %
 %  For example,
 %  ==
-%  ?- group_by(compare, `Mississippi`, Gs),
+%  ?- group_by(==, `Mississippi`, Gs),
 %  maplist([Codes,String]>>string_codes(String,Codes), Gs, Groups).
 %
-%  Groups = ["M", "iiii", "ssss", "pp"].
+%  Groups = ["M", "i", "ss", "i", "ss", "i", "pp", "i"].
 %  ==
 :- meta_predicate group_by(3, +, -).
 group_by(Goal, List, Groups) :-
     (  nonvar(List)
-    -> group_by_(List, Goal, Groups)
+    -> group_by_(List, Groups, Goal)
+    ;  nonvar(Groups)
+    -> flatten(Groups, List)
     ;  instantiation_error(List)
     ).
 
-group_by_([], _, []).
-group_by_([X|Xs], Goal, [Group|Groups]) :-
-    group_([X|Xs], Goal, X, Group, NewList),
-    group_by_(NewList, Goal, Groups).
-
-group_([], _, _, [], []).
-group_([Y|Ys], Goal, X, Group, NewList) :-
-    (  call(Goal, (=), X, Y)
-    -> group_(Ys, Goal, X, Group0, NewList),
-       Group = [Y|Group0]
-    ;  group_(Ys, Goal, X, Group, NewList0),
-       NewList = [Y|NewList0]
+group_by_([], [], _).
+group_by_([X], [[X]], _) :- !.
+group_by_([X,Y|Rest], Groups, Goal) :-
+    (  call(Goal, X, Y)
+    -> group_by_([Y|Rest], [Group|Groups0], Goal),
+       Groups = [[X|Group]|Groups0]
+    ;  group_by_([Y|Rest], Groups0, Goal),
+       Groups = [[X]|Groups0]
     ).
+
+%% group(+List:list, -Groups:list(list)) is semidet.
+%
+%  True if Groups is a compressed version of the elements in List. This predicate uses term equality
+%  per `==/2` as the comparison goal for group_by/2. See the description of group_by/2.
+
+group(List, Groups) :-
+    group_by(==, List, Groups).
 
 %% sort_by(:Goal, +List:list, -Sorted:list) is det.
 %
