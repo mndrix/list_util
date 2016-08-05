@@ -607,7 +607,7 @@ group_with(Goal,List,Groups) :-
 %
 %  Groups = ["M", "i", "ss", "i", "ss", "i", "pp", "i"].
 %  ==
-:- meta_predicate group_by(3, +, -).
+:- meta_predicate group_by(2, +, -).
 group_by(Goal, List, Groups) :-
     (  nonvar(List)
     -> group_by_(List, Groups, Goal)
