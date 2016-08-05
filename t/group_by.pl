@@ -57,6 +57,10 @@ primes_and_composites :-
     group_by(divisibility, [1,2,3,4,5,6,7], X),
     X = [[1,2,3],[4],[5],[6],[7]].
 
+backwards_but_wrong_equality(fail) :-
+    % a, b and c are not equal according to ==/2
+    group_by(==, _, [[a,b,c],[d,d]]).
+
 primes_and_composites_instantiation_error :-
     catch(
         (  group_by(divisibility, X, _Y),

@@ -608,23 +608,25 @@ group_with(Goal,List,Groups) :-
 %  Groups = ["M", "i", "ss", "i", "ss", "i", "pp", "i"].
 %  ==
 :- meta_predicate group_by(2, +, -).
-group_by(Goal, List, Groups) :-
-    (  nonvar(List)
-    -> group_by_(List, Groups, Goal)
-    ;  nonvar(Groups)
-    -> flatten(Groups, List)
-    ;  instantiation_error(List)
+group_by(Goal,List,Groups) :-
+    ( var(List), var(Groups) ->
+        instantiation_error(List)
+    ; otherwise ->
+        group_by_(List,Goal,Groups)
     ).
 
-group_by_([], [], _).
-group_by_([X], [[X]], _) :- !.
-group_by_([X,Y|Rest], Groups, Goal) :-
-    (  call(Goal, X, Y)
-    -> group_by_([Y|Rest], [Group|Groups0], Goal),
-       Groups = [[X|Group]|Groups0]
-    ;  group_by_([Y|Rest], Groups0, Goal),
-       Groups = [[X]|Groups0]
-    ).
+group_by_([],_,[]) :- !.
+group_by_([X|Rest],Goal,[[X|Group]|Groups]) :-
+    group_by_(Rest,X,Goal,Group,Groups).
+
+group_by_([],_,_,[],[]) :- !.
+group_by_([Y|Rest],X,Goal,[Y|Group],Groups) :-
+    call(Goal,X,Y),
+    !,
+    group_by_(Rest,Y,Goal,Group,Groups).
+group_by_([Y|Rest],_,Goal,[],[[Y|Group]|Groups]) :-
+    group_by_(Rest,Y,Goal,Group,Groups).
+
 
 %% group(+List:list, -Groups:list(list)) is semidet.
 %
