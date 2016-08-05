@@ -588,7 +588,8 @@ group_with(Goal,List,Groups) :-
     group_pairs_by_key(Sorted, KeyedGroups),
     pairs_values(KeyedGroups, Groups).
 
-%% group_by(:Goal, +List:list, -Groups:list(list)) is semidet.
+%% group_by(:Goal, +List:list, -Groups:list(list)) is det.
+%% group_by(:Goal, -List:list, +Groups:list(list)) is semidet.
 %
 %  Groups elements of List using a custom Goal predicate to test for equality.
 %  If Goal is true, then two elements compare as equal.
@@ -596,7 +597,8 @@ group_with(Goal,List,Groups) :-
 %
 %  =|call(Goal, X, Y)|=
 %
-%  Adjacent and equal elements of List will be grouped together if and only if Goal is true
+%  Adjacent and equal elements of List will be grouped together if and only if
+%  Goal is true
 %
 %  For example,
 %  ==
