@@ -18,8 +18,10 @@ divisibility(X, Y) :-
 :- use_module(library(tap)).
 
 none :-
-    group_by(==, [], []),
-    group([], []).
+    group_by(==, [], X),
+    X == [],
+    group([], Y),
+    Y == [].
 
 none_backwards :-
     group_by(==, X, []),
@@ -28,8 +30,10 @@ none_backwards :-
     Y == X.
 
 one :-
-    group_by(==, [a], [[a]]),
-    group([a], [[a]]).
+    group_by(==, [a], X),
+    X = [[a]],
+    group([a], Y),
+    Y = [[a]].
 
 one_backwards :-
     group_by(==, X, [[a]]),
@@ -38,8 +42,10 @@ one_backwards :-
     Y == X.
 
 several :-
-    group_by(==, [m,i,s,s,i,s,s,i,p,p,i], [[m],[i],[s,s],[i],[s,s],[i],[p,p],[i]]),
-    group([m,i,s,s,i,s,s,i,p,p,i], [[m],[i],[s,s],[i],[s,s],[i],[p,p],[i]]).
+    group_by(==, [m,i,s,s,i,s,s,i,p,p,i], X),
+    X == [[m],[i],[s,s],[i],[s,s],[i],[p,p],[i]],
+    group([m,i,s,s,i,s,s,i,p,p,i], Y),
+    Y == [[m],[i],[s,s],[i],[s,s],[i],[p,p],[i]].
 
 several_backwards :-
     group_by(==, X, [[m],[i],[s,s],[i],[s,s],[i],[p,p],[i]]),
@@ -48,7 +54,8 @@ several_backwards :-
     Y == X.
 
 primes_and_composites :-
-    group_by(divisibility, [1,2,3,4,5,6,7], [[1,2,3],[4],[5],[6],[7]]).
+    group_by(divisibility, [1,2,3,4,5,6,7], X),
+    X = [[1,2,3],[4],[5],[6],[7]].
 
 primes_and_composites_instantiation_error :-
     catch(
