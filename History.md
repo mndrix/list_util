@@ -1,3 +1,8 @@
+# v0.11.0 (2016-08-05)
+
+  * Add group_by/3
+  * Add group/2
+
 # v0.10.0 (2016-06-29)
 
   * Add minimum_with/3 and maximum_with/3
