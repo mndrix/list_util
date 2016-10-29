@@ -244,7 +244,7 @@ drop_while(Goal, List, Suffix) :-
 %  Prefix = [2,4,6],
 %  Suffix = [9,12].
 %  ==
-:- meta_predicate span(1,+,-,-), span_(+,-,-,1).
+:- meta_predicate span(1,+,-,-).
 span(Goal, List, Prefix, Suffix) :-
     span(Goal, List, Prefix, [], Suffix).
 
@@ -257,20 +257,21 @@ span(Goal, List, Prefix, Suffix) :-
 %  Prefix = [a, a|Tail],
 %  Suffix = [b, c, a].
 %  ==
-:- meta_predicate span(1,+,-,?,-), span_(+,-,?,-,1).
+:- meta_predicate span(1,+,-,?,-).
+:- meta_predicate span_(1,+,-,?,-), span_(+,-,?,-,1).
 span(Goal, List, Prefix, Tail, Suffix) :-
-    span_(List, Prefix, Tail, Suffix, Goal).
-
-span_([], Tail, Tail, [], _).
-span_([H|T0], Prefix, Tail, Suffix, Goal) :-
-    ( call(Goal, H) ->
-        Prefix = [H|T],
-        span_(T0, T, Tail, Suffix, Goal)
-    ; % otherwise ->
-        Prefix = Tail,
-        Suffix = [H|T0]
+    span_(List, Prefix, Tail, Suffix, Goal),
+    (  Prefix == []
+    -> Tail == []
+    ;  Prefix \== Tail
     ).
 
+span_([H|Rest], [H|Prefix], Tail, Suffix, Goal) :-
+    call(Goal, H),
+    !,
+    span_(Rest, Prefix, Tail, Suffix, Goal).
+
+span_(Suffix, Tail, Tail, Suffix, _).
 
 %% replicate(?N:nonneg, ?X:T, ?Xs:list(T))
 %

@@ -1,4 +1,4 @@
-:- use_module(library(list_util)).
+:-use_module('../prolog/list_util').%:- use_module(library(list_util)).
 
 no(_) :- fail.
 yes(_) :- true.
@@ -26,3 +26,6 @@ diff_list :-
     Prefix == [a,a|Tail],
     Suffix == [b,c,a],
     var(Tail).
+
+diff_list_never(fail) :-
+    span(no, [a,a,b,c,a], _Prefix, _Tail, _Suffix).
