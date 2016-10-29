@@ -20,3 +20,9 @@ evens :-
     span(even, [2,4,6,9,12], Prefix, Suffix),
     Prefix == [2,4,6],
     Suffix == [9,12].
+
+diff_list :-
+    span(==(a), [a,a,b,c,a], Prefix, Tail, Suffix),
+    Prefix == [a,a|Tail],
+    Suffix == [b,c,a],
+    var(Tail).

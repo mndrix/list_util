@@ -29,6 +29,7 @@
           , sort_r/2
           , sort_with/3
           , span/4
+          , span/5
           , split/3
           , split_at/4
           , take/3
@@ -245,15 +246,28 @@ drop_while(Goal, List, Suffix) :-
 %  ==
 :- meta_predicate span(1,+,-,-), span_(+,-,-,1).
 span(Goal, List, Prefix, Suffix) :-
-    span_(List, Prefix, Suffix, Goal).
+    span(Goal, List, Prefix, [], Suffix).
 
-span_([], [], [], _).
-span_([H|T0], Prefix, Suffix, Goal) :-
+%% span(:Goal, +List:list, -Prefix:list, ?Tail:list, -Suffix:list) is det.
+%
+%  This is a version of span/4 that supports difference lists.
+%
+%  ==
+%  ?- span(==(a), [a,a,b,c,a], Prefix, Tail, Suffix).
+%  Prefix = [a, a|Tail],
+%  Suffix = [b, c, a].
+%  ==
+:- meta_predicate span(1,+,-,?,-), span_(+,-,?,-,1).
+span(Goal, List, Prefix, Tail, Suffix) :-
+    span_(List, Prefix, Tail, Suffix, Goal).
+
+span_([], Tail, Tail, [], _).
+span_([H|T0], Prefix, Tail, Suffix, Goal) :-
     ( call(Goal, H) ->
         Prefix = [H|T],
-        span_(T0, T, Suffix, Goal)
+        span_(T0, T, Tail, Suffix, Goal)
     ; % otherwise ->
-        Prefix = [],
+        Prefix = Tail,
         Suffix = [H|T0]
     ).
 
