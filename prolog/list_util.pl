@@ -224,7 +224,7 @@ drop_while(Goal, List, Suffix) :-
     span(Goal,List,_,Suffix).
 
 
-%% span(:Goal, +List:list, -Prefix:list, -Suffix:list) is det.
+%% span(:Goal, +List:list, -Prefix:list, -Suffix:list) is semidet.
 %
 %  True if Prefix is the longest prefix of List for which Goal
 %  succeeds and Suffix is the rest. For any Goal, it is true that
@@ -248,7 +248,7 @@ drop_while(Goal, List, Suffix) :-
 span(Goal, List, Prefix, Suffix) :-
     span(Goal, List, Prefix, [], Suffix).
 
-%% span(:Goal, +List:list, -Prefix:list, ?Tail:list, -Suffix:list) is det.
+%% span(:Goal, +List:list, -Prefix:list, ?Tail:list, -Suffix:list) is semidet.
 %
 %  This is a version of span/4 that supports difference lists.
 %

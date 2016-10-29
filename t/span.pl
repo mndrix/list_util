@@ -1,4 +1,4 @@
-:-use_module('../prolog/list_util').%:- use_module(library(list_util)).
+:- use_module(library(list_util)).
 
 no(_) :- fail.
 yes(_) :- true.
