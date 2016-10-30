@@ -224,7 +224,10 @@ drop_while(Goal, List, Suffix) :-
     span(Goal,List,_,Suffix).
 
 
-%% span(:Goal, +List:list, -Prefix:list, -Suffix:list) is semidet.
+%% span(:Goal, +List:list, -Prefix:list, -Suffix:list) is det.
+%% span(:Goal, +List:list, +Prefix:list, -Suffix:list) is semidet.
+%% span(:Goal, +List:list, -Prefix:list, +Suffix:list) is semidet.
+%% span(:Goal, +List:list, +Prefix:list, +Suffix:list) is semidet.
 %
 %  True if Prefix is the longest prefix of List for which Goal
 %  succeeds and Suffix is the rest. For any Goal, it is true that
@@ -244,9 +247,19 @@ drop_while(Goal, List, Suffix) :-
 %  Prefix = [2,4,6],
 %  Suffix = [9,12].
 %  ==
-:- meta_predicate span(1,+,-,-).
+:- meta_predicate span(1,+,-,-), span_(+,-,-,1).
 span(Goal, List, Prefix, Suffix) :-
-    span(Goal, List, Prefix, [], Suffix).
+    span_(List, Prefix, Suffix, Goal).
+
+span_([], [], [], _).
+span_([H|T0], Prefix, Suffix, Goal) :-
+    ( call(Goal, H) ->
+        Prefix = [H|T],
+        span_(T0, T, Suffix, Goal)
+    ; % otherwise ->
+        Prefix = [],
+        Suffix = [H|T0]
+    ).
 
 %% span(:Goal, +List:list, -Prefix:list, ?Tail:list, -Suffix:list) is semidet.
 %
@@ -258,20 +271,20 @@ span(Goal, List, Prefix, Suffix) :-
 %  Suffix = [b, c, a].
 %  ==
 :- meta_predicate span(1,+,-,?,-).
-:- meta_predicate span_(1,+,-,?,-), span_(+,-,?,-,1).
 span(Goal, List, Prefix, Tail, Suffix) :-
+    List = [_|_],
+    Prefix = [_|_],
     span_(List, Prefix, Tail, Suffix, Goal),
-    (  Prefix == []
-    -> Tail == []
-    ;  Prefix \== Tail
+    Prefix \== Tail.
+
+span_([], Tail, Tail, [], _).
+span_([H|Rest], Prefix, Tail, Suffix, Goal) :-
+    (  call(Goal, H)
+    -> span_(Rest, Pre, Tail, Suffix, Goal),
+       Prefix = [H|Pre]
+    ;  Suffix = [H|Rest],
+       Tail = Prefix
     ).
-
-span_([H|Rest], [H|Prefix], Tail, Suffix, Goal) :-
-    call(Goal, H),
-    !,
-    span_(Rest, Prefix, Tail, Suffix, Goal).
-
-span_(Suffix, Tail, Tail, Suffix, _).
 
 %% replicate(?N:nonneg, ?X:T, ?Xs:list(T))
 %
