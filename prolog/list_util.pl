@@ -272,16 +272,14 @@ span_([H|T0], Prefix, Suffix, Goal) :-
 %  ==
 :- meta_predicate span(1,+,-,?,-).
 span(Goal, List, Prefix, Tail, Suffix) :-
-    List = [_|_],
-    Prefix = [_|_],
     span_(List, Prefix, Tail, Suffix, Goal),
-    Prefix \== Tail.
+    Prefix \= [].
 
 span_([], Tail, Tail, [], _).
 span_([H|Rest], Prefix, Tail, Suffix, Goal) :-
     (  call(Goal, H)
-    -> span_(Rest, Pre, Tail, Suffix, Goal),
-       Prefix = [H|Pre]
+    -> Prefix = [H|Pre],
+       span_(Rest, Pre, Tail, Suffix, Goal)
     ;  Suffix = [H|Rest],
        Tail = Prefix
     ).

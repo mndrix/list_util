@@ -4,6 +4,11 @@ no(_) :- fail.
 yes(_) :- true.
 even(X) :- 0 is X mod 2.
 
+:- dynamic side_effect/1.
+
+side_effect(_) :-
+    asserta((side_effect(_) :- !, fail)).
+
 :- use_module(library(tap)).
 
 never :-
@@ -38,6 +43,20 @@ diff_list_evens_with_nonvar_prefix :-
     Prefix == [2,4,6,x,y,z,z,x],
     Suffix == [9,12].
 
+diff_list_always :-
+    span(yes, [john,sue,alice], Prefix, Tail, Suffix),
+    Prefix == [john,sue,alice|Tail],
+    var(Tail),
+    Suffix == [].
+
+% It is possible to have strange test cases where prefixes are equal to suffixes i.e. [a] == [a]
+% given the presence of side effects. This test ensures robustness against impure predicates.
+diff_list_side_effects :-
+    span(side_effect, [a,a], Prefix, Tail, Suffix),
+    Prefix == [a|Tail],
+    var(Tail),
+    Suffix == [a].
+
 % If Prefix is an empty list then Tail shouldn't exist, therefore it is logical to fail here.
 diff_list_never(fail) :-
     span(no, [a,a,b,c,a], _Prefix, _Tail, _Suffix).
@@ -50,5 +69,5 @@ diff_list_never_ground_prefix(fail) :-
 diff_list_never_ground_tail(fail) :-
     span(no, [a,a,b,c,a], _Prefix, [], _Suffix).
 
-diff_list_never_tail_ground_prefix_and_tail(fail) :-
+diff_list_never_ground_prefix_and_tail(fail) :-
     span(no, [a,a,b,c,a], [], [], _Suffix).
