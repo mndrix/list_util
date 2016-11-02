@@ -277,11 +277,12 @@ span(Goal, List, Prefix, Tail, Suffix) :-
 
 span_([], Tail, Tail, [], _).
 span_([H|Rest], Prefix, Tail, Suffix, Goal) :-
-    (  call(Goal, H)
-    -> Prefix = [H|Pre],
-       span_(Rest, Pre, Tail, Suffix, Goal)
-    ;  Suffix = [H|Rest],
-       Tail = Prefix
+    ( call(Goal, H) ->
+        Prefix = [H|Pre],
+        span_(Rest, Pre, Tail, Suffix, Goal)
+    ; % otherwise ->
+        Suffix = [H|Rest],
+        Tail = Prefix
     ).
 
 %% replicate(?N:nonneg, ?X:T, ?Xs:list(T))
