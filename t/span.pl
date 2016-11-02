@@ -57,17 +57,36 @@ diff_list_side_effects :-
     var(Tail),
     Suffix == [a].
 
-% If Prefix is an empty list then Tail shouldn't exist, therefore it is logical to fail here.
-diff_list_never(fail) :-
-    span(no, [a,a,b,c,a], _Prefix, _Tail, _Suffix).
+% If Goal never matches, then the difference list should be empty. An empty
+% difference list is indicated by two identical variables (ie, there is no
+% difference between the front and the tail of that list).
+diff_list_never :-
+    span(no, [a,a,b,c,a], Tail, Tail, Suffix),
+    Suffix == [a,a,b,c,a].
 
 % Same as above case except with ground Prefix input.
-diff_list_never_ground_prefix(fail) :-
-    span(no, [a,a,b,c,a], [], _Tail, _Suffix).
+diff_list_never_ground_prefix :-
+    span(no, [a,a,b,c,a], [], Tail, Suffix),
+    Tail == [],
+    Suffix == [a,a,b,c,a].
 
 % Same as above case except with ground Tail input.
-diff_list_never_ground_tail(fail) :-
-    span(no, [a,a,b,c,a], _Prefix, [], _Suffix).
+diff_list_never_ground_tail :-
+    span(no, [a,a,b,c,a], Prefix, [], Suffix),
+    Prefix == [],
+    Suffix == [a,a,b,c,a].
 
-diff_list_never_ground_prefix_and_tail(fail) :-
-    span(no, [a,a,b,c,a], [], [], _Suffix).
+diff_list_never_ground_prefix_and_tail :-
+    span(no, [a,a,b,c,a], [], [], Suffix),
+    Suffix == [a,a,b,c,a].
+
+% A common use case for span/5 is to match sequences of patterns. For example,
+% this test does something similar to matching the regular expression "a*z*b*".
+%
+% Of course, a DCG would be more natural in this particular case.
+chained :-
+    span(==(a),[a,a,b,c,a],Match,Tail0,Rest0),
+    span(==(z),Rest0,Tail0,Tail1,Rest1),
+    span(==(b),Rest1,Tail1,[],Rest2),
+    Match == [a,a,b],
+    Rest2 == [c,a].
