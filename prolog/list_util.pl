@@ -261,7 +261,7 @@ span(Goal, List, Prefix, Suffix) :-
 %  Prefix = [a, a|Tail],
 %  Suffix = [b, c, a].
 %  ==
-:- meta_predicate span(1,+,-,?,-).
+:- meta_predicate span(1,+,-,?,-), span_(+,-,?,-,1).
 span(Goal, List, Prefix, Tail, Suffix) :-
     span_(List, Prefix, Tail, Suffix, Goal).
 
@@ -439,6 +439,7 @@ maximum(List, Maximum) :-
 %  True if Maximum is the largest projected value (according to compare/3) of
 %  each element in the list. The projected values are found by applying `Goal`
 %  to each list element.
+:- meta_predicate maximum_with(2,?,?).
 maximum_with(Project, List, Maximum) :-
     map_list_to_pairs(Project, List, Pairs),
     maximum_by(compare, Pairs, _-Maximum).
@@ -482,6 +483,7 @@ minimum(List, Minimum) :-
 %  True if Minimum is the largest projected value (according to compare/3) of
 %  each element in the list. The projected values are found by applying `Goal`
 %  to each list element.
+:- meta_predicate minimum_with(2,?,?).
 minimum_with(Project, List, Minimum) :-
     map_list_to_pairs(Project, List, Pairs),
     minimum_by(compare, Pairs, _-Minimum).
@@ -576,7 +578,7 @@ lazy_include_([H|T], Goal, Lazy) :-
 %
 %  True if List2 is a list of elements that all satisfy Goal applied to each
 %  element of List1. This is a lazy version of maplist/3.
-:- meta_predicate lazy_maplist(2, ?, ?).
+:- meta_predicate lazy_maplist(2, ?, ?), lazy_maplist_(?,?,2).
 lazy_maplist(Goal, Xs, Ys) :-
     freeze(Ys, freeze(Xs, lazy_maplist_(Xs, Ys, Goal))).
 
@@ -624,7 +626,7 @@ group_with(Goal,List,Groups) :-
 %
 %  Groups = ["M", "i", "ss", "i", "ss", "i", "pp", "i"].
 %  ==
-:- meta_predicate group_by(2, +, -).
+:- meta_predicate group_by(2, +, -), group_by_(+,2,-), group_by_(?,?,2,?,?).
 group_by(Goal,List,Groups) :-
     ( var(List), var(Groups) ->
         instantiation_error(List)

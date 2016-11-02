@@ -50,6 +50,7 @@ lazy_findall_final(ResponseQ,Solution) :-
 %    * `done` - Goal produced its final solution (no choicepoints left)
 %    * `more` - backtracking will produce more solutions
 %    * `exception(E)` - Goal threw an exception
+:- meta_predicate call_ended(0,?).
 call_ended(Goal,End) :-
     ( catch(call_cleanup(Goal,End=done),E,End=exception(E)) *->
         ( var(End) -> End=more ; ! )
@@ -59,6 +60,7 @@ call_ended(Goal,End) :-
 call_ended(_,fail).  % Goal fails on backtracking
 
 
+:- meta_predicate lazy_findall_flow(?,0,?).
 lazy_findall_flow(Template,Goal,Flow) :-
     gensym(lazy_findall_,ThreadAlias),  % see Note_findall_alias
     message_queue_create(ResponseQ,[max_size(1)]),
