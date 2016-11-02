@@ -38,7 +38,7 @@ diff_list_all_matching_prefix :-
     var(Tail),
     Suffix == [].
 
-diff_list_evens_with_nonvar_prefix :-
+diff_list_evens_with_nonvar_tail :-
     span(even, [2,4,6,9,12], Prefix, [x,y,z,z,x], Suffix),
     Prefix == [2,4,6,x,y,z,z,x],
     Suffix == [9,12].
