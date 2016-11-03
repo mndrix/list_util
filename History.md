@@ -1,3 +1,8 @@
+# v0.12.0 (2016-11-03)
+
+  * Add span/5
+  * Add missing meta_predicate declarations
+
 # v0.11.0 (2016-08-05)
 
   * Add group_by/3
