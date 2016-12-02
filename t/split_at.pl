@@ -49,6 +49,6 @@ unbound_l_take_empty :-
   ).
 
 zero_unbound_l_take :-
-  split_at(0, L, Take, [a,b]),
-  L == [a,b],
-  Take == [].
+    split_at(0, L, Take, [a,b]),
+    L == [a,b],
+    Take == [].
