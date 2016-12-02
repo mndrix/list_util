@@ -52,3 +52,40 @@ zero_unbound_l_take :-
     split_at(0, L, Take, [a,b]),
     L == [a,b],
     Take == [].
+
+blank_n :-
+    split_at(N, [1,2,3], [1], [2,3]),
+    N == 1.
+
+blank_n_and_list :-
+    split_at(N, List, [3,4,5], [6,7]),
+    N == 3,
+    List == [3,4,5,6,7].
+
+blank_n_and_list_empty_rest :-
+    split_at(N, List, [a,b,c], []),
+    N == 3,
+    List == [a,b,c].
+
+blank_n_and_list_and_rest :-
+    split_at(N, List, [3,4,5], Rest),
+    N == 3,
+    List = [3,4,5|Rest],
+    var(Rest).
+
+nondet_split_at :-
+    findall(
+        sol(N,Take,Rest),
+        split_at(N, [3,4,5], Take, Rest),
+        [S0,S1,S2,S3,S4]
+    ),
+    S0 == sol(0, [], [3,4,5]),
+    S1 == sol(1, [3], [4,5]),
+    S2 == sol(2, [3,4], [5]),
+    S3 == sol(3, [3,4,5], []),
+
+    % Matching N > 0
+    S4 = sol(N0, Take, R0),
+    Take == [3,4,5],
+    R0 == [],
+    var(N0).

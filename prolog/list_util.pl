@@ -118,17 +118,18 @@ take(N, List, Front) :-
 %  Xs = Take, Take = [] ;
 %  Xs = Take, Take = [_G3810].
 %  ==
-split_at(N,Xs,Take,Rest) :-
-    split_at_(Xs,N,Take,Rest).
+split_at(N, Xs, Take, Rest) :-
+    (  maplist(var, [N,Take])
+    -> split_at_(Xs, N, Take, Rest)
+    ;  once(split_at_(Xs, N, Take, Rest))
+    ).
 
-split_at_(Rest, 0, [], Rest) :- !. % optimization
+split_at_(Rest, 0, [], Rest).
 split_at_([], N, [], []) :-
-    % cannot optimize here because (+, -, -, -) would be wrong,
-    % which could possibly be a useful generator.
-    N > 0.
+    when(ground(N), N > 0).
 split_at_([X|Xs], N, [X|Take], Rest) :-
-    N > 0,
-    succ(N0, N),
+    when(ground(N), N > 0),
+    when(ground(N0), succ(N0, N)),
     split_at_(Xs, N0, Take, Rest).
 
 
