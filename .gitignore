@@ -3,3 +3,4 @@ list_util-*.tgz
 *~
 *.swp
 dev.pl
+.tags
