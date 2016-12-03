@@ -176,6 +176,7 @@ error:has_type(empty_list, []).
 %  L = [_G1024, _G1027].
 %  ==
 drop(N, List, Rest) :-
+    % see Note_drop_as_split
     drop_(List, N, Rest).
 
 drop_(L, 0, L) :-
@@ -186,6 +187,12 @@ drop_([_|T], N1, Rest) :-
     N1 > 0,
     succ(N0, N1),
     drop_(T, N0, Rest).
+
+% Note_drop_as_split:
+%
+% drop/3 could be implemented as `split_at(N,List,_,Rest)`.  Unfortunately, that
+% consumes memory building up a list of dropped elements only to throw it away.
+% That would make something like drop(1_000_000,List,Rest) too expensive.
 
 
 %% drop_while(:Goal, +List1:list, -List2:list) is det.
