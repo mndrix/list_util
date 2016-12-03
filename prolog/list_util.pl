@@ -119,19 +119,17 @@ take(N, List, Front) :-
 %  Xs = Take, Take = [] ;
 %  Xs = Take, Take = [_G3810].
 %  ==
-split_at(N, Xs, Take, Rest) :-
-    (  var(N), var(Take)
-    -> split_at_(Xs, N, Take, Rest)
-    ;  once(split_at_(Xs, N, Take, Rest))
-    ).
+split_at(N,Xs,Take,Rest) :-
+    TakeLength #=< N,
+    ( nonvar(Rest), Rest=[_|_] -> TakeLength=N; true ),
+    split_at_(Take,Rest,Xs,0,TakeLength),
+    ( TakeLength < N -> Rest=[]; !). % remove dangling choicepoint
 
-split_at_(Rest, 0, [], Rest).
-split_at_([], N, [], []) :-
-    N #> 0.
-split_at_([X|Xs], N, [X|Take], Rest) :-
-    N #> 0,
-    N #= N0 + 1,
-    split_at_(Xs, N0, Take, Rest).
+split_at_([X|Xs],Rest,[X|Ys],N0,N) :-
+    N1 #= N0 + 1,
+    N1 #=< N,
+    split_at_(Xs,Rest,Ys,N1,N).
+split_at_([],L,L,N,N).
 
 
 %% take_while(:Goal, +List1:list, -List2:list) is det.
