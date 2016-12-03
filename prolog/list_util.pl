@@ -37,6 +37,7 @@
           , xfy_list/3
           ]).
 :- use_module(library(apply_macros)).  % for faster maplist/2
+:- use_module(library(clpfd)).
 :- use_module(library(pairs), [group_pairs_by_key/2, map_list_to_pairs/3, pairs_values/2]).
 :- use_module(library(readutil), [read_line_to_string/2]).
 :- use_module(library(when), [when/2]).
@@ -126,10 +127,10 @@ split_at(N, Xs, Take, Rest) :-
 
 split_at_(Rest, 0, [], Rest).
 split_at_([], N, [], []) :-
-    when(ground(N), N > 0).
+    N #> 0.
 split_at_([X|Xs], N, [X|Take], Rest) :-
-    when(ground(N), N > 0),
-    when(ground(N0), succ(N0, N)),
+    N #> 0,
+    N #= N0 + 1,
     split_at_(Xs, N0, Take, Rest).
 
 
