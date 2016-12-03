@@ -119,7 +119,7 @@ take(N, List, Front) :-
 %  Xs = Take, Take = [_G3810].
 %  ==
 split_at(N, Xs, Take, Rest) :-
-    (  maplist(var, [N,Take])
+    (  var(N), var(Take)
     -> split_at_(Xs, N, Take, Rest)
     ;  once(split_at_(Xs, N, Take, Rest))
     ).
