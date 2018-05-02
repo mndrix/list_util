@@ -41,3 +41,9 @@ forward_trailing_one :-
     split("hello\n", 10, ["hello",""]).
 forward_trailing_two :-
     split("hello\ngoodbye\n", 10, ["hello", "goodbye", ""]).
+
+
+% https://github.com/mndrix/list_util/issues/30
+join_containing_delimiter :-
+    split(S, 0' , ["foo baz", "bar"]),
+    S == "foo baz bar".

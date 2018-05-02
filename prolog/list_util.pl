@@ -68,9 +68,8 @@ split([], _, [[]]) :-
     !.  % optimization
 split([Div|T], Div, [[]|Rest]) :-
     split(T, Div, Rest),  % implies: dif(Rest, [])
-    !.  % optimization
+    !.
 split([H|T], Div, [[H|First]|Rest]) :-
-    dif(H, Div),
     split(T, Div, [First|Rest]).
 
 
