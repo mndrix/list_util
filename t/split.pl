@@ -18,22 +18,22 @@ forward_three :-
 
 backward_zero :-
     split(Codes, 10, [[]]),
-    Codes = [].
+    Codes == [].
 backward_one :-
     split(Codes, 10, ["hello"]),
-    Codes = "hello".
+    Codes == "hello".
 backward_two :-
     [Comma] = ",",
     split(Codes, Comma, ["alpha", "beta"]),
-    Codes = "alpha,beta".
+    Codes == "alpha,beta".
 backward_three :-
     [Comma] = ",",
     split(Codes, Comma, ["alpha","beta","gamma"]),
-    Codes = "alpha,beta,gamma".
+    Codes == "alpha,beta,gamma".
 
 find_separator :-
     split("alpha,beta", Div, ["alpha","beta"]),
-    [Div] = ",".
+    [Div] == ",".
 
 forward_trailing_zero :-
     split("\n", 10, ["",""]).
