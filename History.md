@@ -1,3 +1,8 @@
+# v0.13.0 (2018-05-02)
+
+  * split/3: allow delimiter in third argument for mode split(-,+,+)
+  * take/3, drop/3: remove deprecated argument order
+
 # v0.12.0 (2016-11-03)
 
   * Add span/5
