@@ -4,13 +4,17 @@
 :- set_prolog_flag(double_quotes, codes).
 
 forward_zero :-
-    split("", 10, [""]).
+    split("", 10, Parts),
+    Parts == [""].
 forward_one :-
-    split("hello", 10, ["hello"]).
+    split("hello", 10, Parts),
+    Parts = ["hello"].
 forward_two :-
-    split("hello\naravis", 10, ["hello", "aravis"]).
+    split("hello\naravis", 10, Parts),
+    Parts == ["hello", "aravis"].
 forward_three :-
-    split("hello\naravis\njericho", 10, ["hello","aravis","jericho"]).
+    split("hello\naravis\njericho", 10, Parts),
+    Parts == ["hello","aravis","jericho"].
 
 backward_zero :-
     split(Codes, 10, [[]]),
